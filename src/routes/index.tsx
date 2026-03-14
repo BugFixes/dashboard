@@ -183,8 +183,8 @@ function OverviewScreen({
 							</div>
 							<div className="flex flex-wrap items-center gap-3">
 								<Button asChild size="lg" className="rounded-full">
-									<Link to="/setup">
-										Review setup
+									<Link to="/intake">
+										Open intake
 										<ArrowRight />
 									</Link>
 								</Button>
