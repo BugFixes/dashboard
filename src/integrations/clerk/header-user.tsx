@@ -7,7 +7,7 @@ export default function HeaderUser() {
 	if (!env.providers.clerkConfigured) {
 		return (
 			<Button asChild variant="outline" size="sm">
-				<Link to="/setup">Add Clerk keys</Link>
+				<Link to="/settings">Add Clerk keys</Link>
 			</Button>
 		);
 	}

@@ -1,6 +1,6 @@
-# Daphne Dashboard
+# Bugfixes Dashboard
 
-Frontend scaffold for the Daphne dashboard using Bun, TanStack Start, shadcn, Clerk, and flags.gg.
+Frontend scaffold for the Bugfixes operator dashboard using Bun, TanStack Start, shadcn, Clerk, and flags.gg.
 
 ## Local development
 
@@ -15,6 +15,12 @@ bun run dev
 ```
 
 The app is configured to run alongside Daphne, which is expected at `http://localhost:3000` by default.
+This foundation currently provides:
+
+- a persistent admin shell with desktop and mobile navigation
+- overview, accounts, agents, bugs, tickets, notifications, and settings sections
+- a recent activity overview with live, snapshot, and empty-state modes
+- a Clerk-backed admin sign-in gate when auth keys are configured
 
 ## Environment
 
@@ -65,8 +71,8 @@ To make failed checks block merges, add a branch protection rule or ruleset for 
 
 - `src/start.ts` adds Clerk request middleware when `CLERK_SECRET_KEY` is present.
 - `src/routes/__root.tsx` wires the root document, Clerk provider, flags.gg provider, and the shared shell.
-- `src/routes/index.tsx` is the dashboard landing scaffold.
-- `src/routes/setup.tsx` documents the environment contract and local bootstrap flow.
+- `src/routes/index.tsx` is the dashboard overview with recent bug intake and system activity.
+- `src/routes/settings.tsx` documents the environment contract, local bootstrap flow, and auth behavior.
 - `src/components/ui/*` contains the first shadcn primitives added for route implementation.
 
 ## Adding more shadcn components

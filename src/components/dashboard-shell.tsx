@@ -1,6 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, PanelLeft, X } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import AdminAccessGate from "#/components/admin-access-gate";
 import ClerkHeader from "#/integrations/clerk/header-user";
 import {
 	dashboardNavItems,
@@ -65,11 +66,11 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 									activeOptions={{ exact: true }}
 								>
 									<p className="m-0 font-display text-2xl font-semibold tracking-tight text-[var(--sea-ink)]">
-										Daphne
+										Bugfixes
 									</p>
 									<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-										Persistent navigation for intake, investigations, and
-										release work.
+										Operator dashboard for accounts, agents, bugs, tickets,
+										notifications, and admin setup.
 									</p>
 								</Link>
 							</div>
@@ -110,12 +111,12 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 					<div className="rounded-[24px] border border-[var(--line)] bg-[color-mix(in_oklab,var(--surface-strong)_84%,transparent)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
 						<p className="eyebrow">Layout contract</p>
 						<p className="mt-3 mb-0 text-base font-semibold text-[var(--sea-ink)]">
-							New routes plug into the content pane without moving the chrome.
+							Every admin module plugs into the same stable shell.
 						</p>
 						<p className="mt-2 mb-4 text-sm leading-6 text-[var(--sea-ink-soft)]">
-							This sidebar owns global navigation. The top bar owns local
-							context and utilities. Screens only need to render their main
-							content.
+							Navigation, auth controls, and operator context stay fixed while
+							account setup, agent management, and bug investigation workflows
+							fill in underneath.
 						</p>
 						<Button
 							asChild
@@ -176,7 +177,9 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 					</div>
 				</header>
 
-				<div className="relative">{children}</div>
+				<div className="relative">
+					<AdminAccessGate>{children}</AdminAccessGate>
+				</div>
 			</div>
 
 			{mobileNavOpen ? (
@@ -197,11 +200,11 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 									Primary navigation
 								</Badge>
 								<p className="m-0 font-display text-2xl font-semibold tracking-tight text-[var(--sea-ink)]">
-									Daphne
+									Bugfixes
 								</p>
 								<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-									Choose an area. The shell stays fixed while each screen
-									evolves.
+									Choose an admin area. The shell stays fixed while the domain
+									screens evolve.
 								</p>
 							</div>
 							<Button

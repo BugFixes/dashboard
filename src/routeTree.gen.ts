@@ -9,30 +9,42 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ShipRoomRouteImport } from './routes/ship-room'
-import { Route as SetupRouteImport } from './routes/setup'
-import { Route as InvestigationsRouteImport } from './routes/investigations'
-import { Route as IntakeRouteImport } from './routes/intake'
+import { Route as TicketsRouteImport } from './routes/tickets'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as BugsRouteImport } from './routes/bugs'
+import { Route as AgentsRouteImport } from './routes/agents'
+import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
-const ShipRoomRoute = ShipRoomRouteImport.update({
-  id: '/ship-room',
-  path: '/ship-room',
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SetupRoute = SetupRouteImport.update({
-  id: '/setup',
-  path: '/setup',
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InvestigationsRoute = InvestigationsRouteImport.update({
-  id: '/investigations',
-  path: '/investigations',
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IntakeRoute = IntakeRouteImport.update({
-  id: '/intake',
-  path: '/intake',
+const BugsRoute = BugsRouteImport.update({
+  id: '/bugs',
+  path: '/bugs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentsRoute = AgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountsRoute = AccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,70 +55,114 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/intake': typeof IntakeRoute
-  '/investigations': typeof InvestigationsRoute
-  '/setup': typeof SetupRoute
-  '/ship-room': typeof ShipRoomRoute
+  '/accounts': typeof AccountsRoute
+  '/agents': typeof AgentsRoute
+  '/bugs': typeof BugsRoute
+  '/notifications': typeof NotificationsRoute
+  '/settings': typeof SettingsRoute
+  '/tickets': typeof TicketsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/intake': typeof IntakeRoute
-  '/investigations': typeof InvestigationsRoute
-  '/setup': typeof SetupRoute
-  '/ship-room': typeof ShipRoomRoute
+  '/accounts': typeof AccountsRoute
+  '/agents': typeof AgentsRoute
+  '/bugs': typeof BugsRoute
+  '/notifications': typeof NotificationsRoute
+  '/settings': typeof SettingsRoute
+  '/tickets': typeof TicketsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/intake': typeof IntakeRoute
-  '/investigations': typeof InvestigationsRoute
-  '/setup': typeof SetupRoute
-  '/ship-room': typeof ShipRoomRoute
+  '/accounts': typeof AccountsRoute
+  '/agents': typeof AgentsRoute
+  '/bugs': typeof BugsRoute
+  '/notifications': typeof NotificationsRoute
+  '/settings': typeof SettingsRoute
+  '/tickets': typeof TicketsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/intake' | '/investigations' | '/setup' | '/ship-room'
+  fullPaths:
+    | '/'
+    | '/accounts'
+    | '/agents'
+    | '/bugs'
+    | '/notifications'
+    | '/settings'
+    | '/tickets'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/intake' | '/investigations' | '/setup' | '/ship-room'
-  id: '__root__' | '/' | '/intake' | '/investigations' | '/setup' | '/ship-room'
+  to:
+    | '/'
+    | '/accounts'
+    | '/agents'
+    | '/bugs'
+    | '/notifications'
+    | '/settings'
+    | '/tickets'
+  id:
+    | '__root__'
+    | '/'
+    | '/accounts'
+    | '/agents'
+    | '/bugs'
+    | '/notifications'
+    | '/settings'
+    | '/tickets'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  IntakeRoute: typeof IntakeRoute
-  InvestigationsRoute: typeof InvestigationsRoute
-  SetupRoute: typeof SetupRoute
-  ShipRoomRoute: typeof ShipRoomRoute
+  AccountsRoute: typeof AccountsRoute
+  AgentsRoute: typeof AgentsRoute
+  BugsRoute: typeof BugsRoute
+  NotificationsRoute: typeof NotificationsRoute
+  SettingsRoute: typeof SettingsRoute
+  TicketsRoute: typeof TicketsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/ship-room': {
-      id: '/ship-room'
-      path: '/ship-room'
-      fullPath: '/ship-room'
-      preLoaderRoute: typeof ShipRoomRouteImport
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/setup': {
-      id: '/setup'
-      path: '/setup'
-      fullPath: '/setup'
-      preLoaderRoute: typeof SetupRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/investigations': {
-      id: '/investigations'
-      path: '/investigations'
-      fullPath: '/investigations'
-      preLoaderRoute: typeof InvestigationsRouteImport
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/intake': {
-      id: '/intake'
-      path: '/intake'
-      fullPath: '/intake'
-      preLoaderRoute: typeof IntakeRouteImport
+    '/bugs': {
+      id: '/bugs'
+      path: '/bugs'
+      fullPath: '/bugs'
+      preLoaderRoute: typeof BugsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agents': {
+      id: '/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accounts': {
+      id: '/accounts'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof AccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -121,10 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  IntakeRoute: IntakeRoute,
-  InvestigationsRoute: InvestigationsRoute,
-  SetupRoute: SetupRoute,
-  ShipRoomRoute: ShipRoomRoute,
+  AccountsRoute: AccountsRoute,
+  AgentsRoute: AgentsRoute,
+  BugsRoute: BugsRoute,
+  NotificationsRoute: NotificationsRoute,
+  SettingsRoute: SettingsRoute,
+  TicketsRoute: TicketsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,12 +1,22 @@
 import type { LucideIcon } from "lucide-react";
-import { House, Inbox, Rocket, SearchCheck, Settings2 } from "lucide-react";
+import {
+	BellRing,
+	Bot,
+	Bug,
+	Building2,
+	House,
+	Settings2,
+	Ticket,
+} from "lucide-react";
 
 export type DashboardRoutePath =
 	| "/"
-	| "/intake"
-	| "/investigations"
-	| "/ship-room"
-	| "/setup";
+	| "/accounts"
+	| "/agents"
+	| "/bugs"
+	| "/tickets"
+	| "/notifications"
+	| "/settings";
 
 export type DashboardNavItem = {
 	to: DashboardRoutePath;
@@ -22,37 +32,52 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		to: "/",
 		label: "Overview",
 		shortLabel: "Overview",
-		description: "Shift summary, live queue posture, and operator watchlist.",
+		description: "Recent bug intake, system activity, and admin posture.",
 		icon: House,
 		exact: true,
 	},
 	{
-		to: "/intake",
-		label: "Intake",
-		shortLabel: "Intake",
+		to: "/accounts",
+		label: "Accounts",
+		shortLabel: "Accounts",
 		description:
-			"New reports, duplication checks, and first-response workflow.",
-		icon: Inbox,
+			"Customer accounts, onboarding state, and environment ownership.",
+		icon: Building2,
 	},
 	{
-		to: "/investigations",
-		label: "Investigations",
-		shortLabel: "Investigations",
-		description: "Active debugging work, blockers, and reproduction capture.",
-		icon: SearchCheck,
+		to: "/agents",
+		label: "Agents",
+		shortLabel: "Agents",
+		description: "Agent creation, key rotation, status, and delivery posture.",
+		icon: Bot,
 	},
 	{
-		to: "/ship-room",
-		label: "Ship room",
-		shortLabel: "Ship room",
-		description: "Verification, release readiness, and handoff coordination.",
-		icon: Rocket,
+		to: "/bugs",
+		label: "Bugs",
+		shortLabel: "Bugs",
+		description: "Stacktraces, deduplication, and investigation entrypoint.",
+		icon: Bug,
 	},
 	{
-		to: "/setup",
-		label: "Setup",
-		shortLabel: "Setup",
-		description: "Environment contract, local dev wiring, and bootstrap notes.",
+		to: "/tickets",
+		label: "Tickets",
+		shortLabel: "Tickets",
+		description: "Linked issue flow, sync status, and escalation history.",
+		icon: Ticket,
+	},
+	{
+		to: "/notifications",
+		label: "Notifications",
+		shortLabel: "Notifications",
+		description: "Outbound alerts, delivery health, and retry pressure.",
+		icon: BellRing,
+	},
+	{
+		to: "/settings",
+		label: "Settings",
+		shortLabel: "Settings",
+		description:
+			"Admin auth, local wiring, and dashboard environment contract.",
 		icon: Settings2,
 	},
 ];

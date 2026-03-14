@@ -52,7 +52,7 @@ export default function DashboardAreaPlaceholder({
 								variant="secondary"
 								className="bg-white/10 text-white shadow-none"
 							>
-								Empty state pattern
+								Foundation module
 							</Badge>
 						</div>
 						<div className="space-y-4">
@@ -93,13 +93,13 @@ export default function DashboardAreaPlaceholder({
 							<div>
 								<p className="eyebrow">Why this screen exists</p>
 								<CardTitle className="mt-2 text-2xl font-semibold tracking-tight">
-									Stable shell before live modules
+									Stable shell before live admin workflows
 								</CardTitle>
 							</div>
 						</div>
 						<CardDescription className="text-sm leading-7 sm:text-base">
 							Each top-level area can ship iteratively without forcing another
-							layout pass. Navigation, spacing, and operator chrome stay fixed
+							layout pass. Navigation, spacing, and admin chrome stay fixed
 							while domain modules replace these placeholders.
 						</CardDescription>
 					</CardHeader>
@@ -131,7 +131,7 @@ export default function DashboardAreaPlaceholder({
 						<div>
 							<p className="eyebrow">Next implementation pass</p>
 							<CardTitle className="mt-2 text-2xl font-semibold tracking-tight">
-								Replace the empty state with real operator workflow
+								Replace the placeholder with real operator workflow
 							</CardTitle>
 						</div>
 					</div>

@@ -17,9 +17,9 @@ const envVars = [
 	},
 	{
 		name: "VITE_CLERK_PUBLISHABLE_KEY",
-		required: true,
+		required: false,
 		description:
-			"Client key for Clerk UI components and session bootstrapping.",
+			"Client key for Clerk UI components and the admin sign-in flow.",
 	},
 	{
 		name: "CLERK_SECRET_KEY",
@@ -44,37 +44,45 @@ const envVars = [
 ] as const;
 
 const nextSteps = [
-	"Replace the placeholder route cards with real data modules from Daphne.",
-	"Protect authenticated routes with Clerk once the dashboard screens exist.",
-	"Add typed flag keys around new modules before shipping gated UI.",
+	"Replace the placeholder routes with real Daphne-backed account, agent, bug, ticket, and notification modules.",
+	"Tighten auth from any signed-in Clerk user to a narrower admin policy once role claims exist.",
+	"Add typed dashboard data fetchers so the overview and detail screens share one contract.",
 ] as const;
 
-export const Route = createFileRoute("/setup")({
-	component: SetupPage,
+export const Route = createFileRoute("/settings")({
+	component: SettingsPage,
 });
 
-function SetupPage() {
+function SettingsPage() {
 	return (
 		<main className="page-wrap space-y-6 px-4 pb-16 pt-10">
 			<Card className="surface panel-border">
 				<CardHeader className="space-y-4">
-					<Badge variant="outline" className="w-fit">
-						Local development
-					</Badge>
+					<div className="flex flex-wrap items-center gap-2">
+						<Badge variant="outline">Dashboard settings</Badge>
+						<Badge
+							variant={env.providers.clerkConfigured ? "default" : "secondary"}
+						>
+							{env.providers.clerkConfigured
+								? "Clerk auth configured"
+								: "Local auth bypass"}
+						</Badge>
+					</div>
 					<div className="space-y-3">
 						<CardTitle className="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Boot the dashboard next to Daphne.
+							Boot the dashboard next to Daphne and control admin access.
 						</CardTitle>
 						<p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
 							The dashboard runs on <code>{env.appUrl}</code> by default and
-							assumes Daphne is reachable at <code>{env.daphneUrl}</code>. Bun
-							owns install and runtime; TanStack Start owns routing and SSR.
+							assumes Daphne is reachable at <code>{env.daphneUrl}</code>. When
+							Clerk is configured, the admin shell requires sign-in before the
+							main content renders.
 						</p>
 					</div>
 				</CardHeader>
 				<CardContent className="grid gap-5 lg:grid-cols-2">
 					<div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-						<p className="eyebrow">Commands</p>
+						<p className="eyebrow">Local development</p>
 						<pre className="mt-3 overflow-x-auto rounded-xl bg-slate-950/95 p-4 text-sm text-slate-50">
 							<code>{`cp .env.example .env.local
 bun install
@@ -82,17 +90,22 @@ bun run dev`}</code>
 						</pre>
 					</div>
 					<div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-						<p className="eyebrow">What is already wired</p>
+						<p className="eyebrow">What this foundation already does</p>
 						<ul className="mt-3 space-y-3 text-sm text-muted-foreground">
-							<li>Clerk provider in the root shell with TanStack Start SDK.</li>
 							<li>
-								Optional Clerk request middleware in <code>src/start.ts</code>{" "}
-								when a secret key is present.
+								Provides a persistent admin shell with mobile and desktop
+								navigation.
 							</li>
-							<li>flags.gg provider gated behind public env configuration.</li>
 							<li>
-								Reusable shadcn components for cards, badges, buttons, and
-								loading states.
+								Shows a recent bug activity overview with live, snapshot, and
+								empty-state modes.
+							</li>
+							<li>
+								Gates the dashboard behind Clerk when auth keys are present.
+							</li>
+							<li>
+								Keeps a local fallback so development is still frictionless
+								before auth is wired.
 							</li>
 						</ul>
 					</div>
