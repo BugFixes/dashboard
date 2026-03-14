@@ -7,12 +7,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const config = defineConfig({
 	server: {
-		port: 3001,
-		strictPort: true,
+		port: Number(process.env.PORT || 3001),
 	},
 	preview: {
-		port: 4174,
-		strictPort: true,
+		port: Number(process.env.PORT || 4174),
 	},
 	plugins: [
 		devtools(),
