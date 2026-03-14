@@ -61,8 +61,10 @@ bun run check
 
 ## Adding more shadcn components
 
+Use the repository-standard shadcn invocation for new components:
+
 ```bash
-bunx shadcn@latest add dialog table input form
+pnpm dlx shadcn@latest add dialog table input form
 ```
 
 ## References
