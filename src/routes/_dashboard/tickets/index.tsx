@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import DashboardAreaPlaceholder from "#/components/dashboard-area-placeholder";
 
-export const Route = createFileRoute("/tickets")({
+export const Route = createFileRoute("/_dashboard/tickets/")({
 	component: TicketsRoute,
 });
 

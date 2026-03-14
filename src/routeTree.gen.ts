@@ -9,88 +9,95 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TicketsRouteImport } from './routes/tickets'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as BugsRouteImport } from './routes/bugs'
-import { Route as AgentsRouteImport } from './routes/agents'
-import { Route as AccountsRouteImport } from './routes/accounts'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteRouteImport } from './routes/_dashboard/route'
+import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
+import { Route as DashboardTicketsIndexRouteImport } from './routes/_dashboard/tickets/index'
+import { Route as DashboardSettingsIndexRouteImport } from './routes/_dashboard/settings/index'
+import { Route as DashboardNotificationsIndexRouteImport } from './routes/_dashboard/notifications/index'
+import { Route as DashboardBugsIndexRouteImport } from './routes/_dashboard/bugs/index'
+import { Route as DashboardAgentsIndexRouteImport } from './routes/_dashboard/agents/index'
+import { Route as DashboardAccountsIndexRouteImport } from './routes/_dashboard/accounts/index'
 
-const TicketsRoute = TicketsRouteImport.update({
-  id: '/tickets',
-  path: '/tickets',
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BugsRoute = BugsRouteImport.update({
-  id: '/bugs',
-  path: '/bugs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgentsRoute = AgentsRouteImport.update({
-  id: '/agents',
-  path: '/agents',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountsRoute = AccountsRouteImport.update({
-  id: '/accounts',
-  path: '/accounts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardTicketsIndexRoute = DashboardTicketsIndexRouteImport.update({
+  id: '/tickets/',
+  path: '/tickets/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardSettingsIndexRoute = DashboardSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardNotificationsIndexRoute =
+  DashboardNotificationsIndexRouteImport.update({
+    id: '/notifications/',
+    path: '/notifications/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardBugsIndexRoute = DashboardBugsIndexRouteImport.update({
+  id: '/bugs/',
+  path: '/bugs/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardAgentsIndexRoute = DashboardAgentsIndexRouteImport.update({
+  id: '/agents/',
+  path: '/agents/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardAccountsIndexRoute = DashboardAccountsIndexRouteImport.update({
+  id: '/accounts/',
+  path: '/accounts/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/accounts': typeof AccountsRoute
-  '/agents': typeof AgentsRoute
-  '/bugs': typeof BugsRoute
-  '/notifications': typeof NotificationsRoute
-  '/settings': typeof SettingsRoute
-  '/tickets': typeof TicketsRoute
+  '/': typeof DashboardIndexRoute
+  '/accounts/': typeof DashboardAccountsIndexRoute
+  '/agents/': typeof DashboardAgentsIndexRoute
+  '/bugs/': typeof DashboardBugsIndexRoute
+  '/notifications/': typeof DashboardNotificationsIndexRoute
+  '/settings/': typeof DashboardSettingsIndexRoute
+  '/tickets/': typeof DashboardTicketsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/accounts': typeof AccountsRoute
-  '/agents': typeof AgentsRoute
-  '/bugs': typeof BugsRoute
-  '/notifications': typeof NotificationsRoute
-  '/settings': typeof SettingsRoute
-  '/tickets': typeof TicketsRoute
+  '/': typeof DashboardIndexRoute
+  '/accounts': typeof DashboardAccountsIndexRoute
+  '/agents': typeof DashboardAgentsIndexRoute
+  '/bugs': typeof DashboardBugsIndexRoute
+  '/notifications': typeof DashboardNotificationsIndexRoute
+  '/settings': typeof DashboardSettingsIndexRoute
+  '/tickets': typeof DashboardTicketsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/accounts': typeof AccountsRoute
-  '/agents': typeof AgentsRoute
-  '/bugs': typeof BugsRoute
-  '/notifications': typeof NotificationsRoute
-  '/settings': typeof SettingsRoute
-  '/tickets': typeof TicketsRoute
+  '/_dashboard': typeof DashboardRouteRouteWithChildren
+  '/_dashboard/': typeof DashboardIndexRoute
+  '/_dashboard/accounts/': typeof DashboardAccountsIndexRoute
+  '/_dashboard/agents/': typeof DashboardAgentsIndexRoute
+  '/_dashboard/bugs/': typeof DashboardBugsIndexRoute
+  '/_dashboard/notifications/': typeof DashboardNotificationsIndexRoute
+  '/_dashboard/settings/': typeof DashboardSettingsIndexRoute
+  '/_dashboard/tickets/': typeof DashboardTicketsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/accounts'
-    | '/agents'
-    | '/bugs'
-    | '/notifications'
-    | '/settings'
-    | '/tickets'
+    | '/accounts/'
+    | '/agents/'
+    | '/bugs/'
+    | '/notifications/'
+    | '/settings/'
+    | '/tickets/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -102,87 +109,107 @@ export interface FileRouteTypes {
     | '/tickets'
   id:
     | '__root__'
-    | '/'
-    | '/accounts'
-    | '/agents'
-    | '/bugs'
-    | '/notifications'
-    | '/settings'
-    | '/tickets'
+    | '/_dashboard'
+    | '/_dashboard/'
+    | '/_dashboard/accounts/'
+    | '/_dashboard/agents/'
+    | '/_dashboard/bugs/'
+    | '/_dashboard/notifications/'
+    | '/_dashboard/settings/'
+    | '/_dashboard/tickets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AccountsRoute: typeof AccountsRoute
-  AgentsRoute: typeof AgentsRoute
-  BugsRoute: typeof BugsRoute
-  NotificationsRoute: typeof NotificationsRoute
-  SettingsRoute: typeof SettingsRoute
-  TicketsRoute: typeof TicketsRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tickets': {
-      id: '/tickets'
-      path: '/tickets'
-      fullPath: '/tickets'
-      preLoaderRoute: typeof TicketsRouteImport
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bugs': {
-      id: '/bugs'
-      path: '/bugs'
-      fullPath: '/bugs'
-      preLoaderRoute: typeof BugsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agents': {
-      id: '/agents'
-      path: '/agents'
-      fullPath: '/agents'
-      preLoaderRoute: typeof AgentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/accounts': {
-      id: '/accounts'
-      path: '/accounts'
-      fullPath: '/accounts'
-      preLoaderRoute: typeof AccountsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_dashboard/': {
+      id: '/_dashboard/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/tickets/': {
+      id: '/_dashboard/tickets/'
+      path: '/tickets'
+      fullPath: '/tickets/'
+      preLoaderRoute: typeof DashboardTicketsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/settings/': {
+      id: '/_dashboard/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof DashboardSettingsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/notifications/': {
+      id: '/_dashboard/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications/'
+      preLoaderRoute: typeof DashboardNotificationsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/bugs/': {
+      id: '/_dashboard/bugs/'
+      path: '/bugs'
+      fullPath: '/bugs/'
+      preLoaderRoute: typeof DashboardBugsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/agents/': {
+      id: '/_dashboard/agents/'
+      path: '/agents'
+      fullPath: '/agents/'
+      preLoaderRoute: typeof DashboardAgentsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/accounts/': {
+      id: '/_dashboard/accounts/'
+      path: '/accounts'
+      fullPath: '/accounts/'
+      preLoaderRoute: typeof DashboardAccountsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
   }
 }
 
+interface DashboardRouteRouteChildren {
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardAccountsIndexRoute: typeof DashboardAccountsIndexRoute
+  DashboardAgentsIndexRoute: typeof DashboardAgentsIndexRoute
+  DashboardBugsIndexRoute: typeof DashboardBugsIndexRoute
+  DashboardNotificationsIndexRoute: typeof DashboardNotificationsIndexRoute
+  DashboardSettingsIndexRoute: typeof DashboardSettingsIndexRoute
+  DashboardTicketsIndexRoute: typeof DashboardTicketsIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardAccountsIndexRoute: DashboardAccountsIndexRoute,
+  DashboardAgentsIndexRoute: DashboardAgentsIndexRoute,
+  DashboardBugsIndexRoute: DashboardBugsIndexRoute,
+  DashboardNotificationsIndexRoute: DashboardNotificationsIndexRoute,
+  DashboardSettingsIndexRoute: DashboardSettingsIndexRoute,
+  DashboardTicketsIndexRoute: DashboardTicketsIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AccountsRoute: AccountsRoute,
-  AgentsRoute: AgentsRoute,
-  BugsRoute: BugsRoute,
-  NotificationsRoute: NotificationsRoute,
-  SettingsRoute: SettingsRoute,
-  TicketsRoute: TicketsRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

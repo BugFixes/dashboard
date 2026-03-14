@@ -22,6 +22,25 @@ This foundation currently provides:
 - a recent activity overview with live, snapshot, and empty-state modes
 - a Clerk-backed admin sign-in gate when auth keys are configured
 
+## App structure
+
+The dashboard now uses a two-layer route model:
+
+- `src/routes/__root.tsx` owns the document shell, metadata, and global providers.
+- `src/routes/_dashboard/route.tsx` owns the persistent operator shell, navigation, and admin gate.
+- `src/routes/_dashboard/index.tsx` is the overview route.
+- `src/routes/_dashboard/<section>/index.tsx` owns each top-level admin area and leaves room for future nested routes in that section directory.
+
+Current top-level route map:
+
+- `/` overview
+- `/accounts` accounts
+- `/agents` agents
+- `/bugs` bugs
+- `/tickets` tickets
+- `/notifications` notifications
+- `/settings` settings
+
 ## Environment
 
 `VITE_APP_URL`
@@ -70,9 +89,10 @@ To make failed checks block merges, add a branch protection rule or ruleset for 
 ## Scaffold contents
 
 - `src/start.ts` adds Clerk request middleware when `CLERK_SECRET_KEY` is present.
-- `src/routes/__root.tsx` wires the root document, Clerk provider, flags.gg provider, and the shared shell.
-- `src/routes/index.tsx` is the dashboard overview with recent bug intake and system activity.
-- `src/routes/settings.tsx` documents the environment contract, local bootstrap flow, and auth behavior.
+- `src/routes/__root.tsx` wires the root document, Clerk provider, flags.gg provider, and global page chrome.
+- `src/routes/_dashboard/route.tsx` mounts the shared operator shell for all dashboard routes.
+- `src/routes/_dashboard/index.tsx` is the dashboard overview with recent bug intake and system activity.
+- `src/routes/_dashboard/settings/index.tsx` documents the environment contract, local bootstrap flow, and auth behavior.
 - `src/components/ui/*` contains the first shadcn primitives added for route implementation.
 
 ## Adding more shadcn components

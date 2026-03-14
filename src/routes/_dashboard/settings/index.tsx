@@ -49,7 +49,7 @@ const nextSteps = [
 	"Add typed dashboard data fetchers so the overview and detail screens share one contract.",
 ] as const;
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_dashboard/settings/")({
 	component: SettingsPage,
 });
 
