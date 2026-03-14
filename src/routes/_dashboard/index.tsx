@@ -39,7 +39,7 @@ import {
 
 type SearchMode = "auto" | "snapshot" | "empty";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_dashboard/")({
 	validateSearch: (search: Record<string, unknown>) => ({
 		mode:
 			search.mode === "snapshot" || search.mode === "empty"
