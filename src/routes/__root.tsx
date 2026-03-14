@@ -8,6 +8,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import DashboardShell from "#/components/dashboard-shell";
 import AppFlagsProvider from "#/integrations/flags/provider";
+import { env } from "#/lib/env";
 import ClerkProvider from "../integrations/clerk/provider";
 import appCss from "../styles.css?url";
 
@@ -24,12 +25,12 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "Daphne Dashboard",
+				title: env.appName,
 			},
 			{
 				name: "description",
 				content:
-					"Frontend scaffold for the Daphne dashboard built with Bun, TanStack Start, shadcn, Clerk, and flags.gg.",
+					"Operator dashboard for Bugfixes accounts, agents, bug intake, tickets, notifications, and settings.",
 			},
 		],
 		links: [

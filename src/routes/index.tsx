@@ -167,26 +167,34 @@ function OverviewScreen({
 							<div className="grid gap-3 sm:grid-cols-3">
 								<SignalPill
 									icon={Siren}
-									label={data.metrics[0]?.label ?? "Bug intake"}
+									label={data.metrics[0]?.label ?? "New stacktraces"}
 									value={data.metrics[0]?.value ?? "0"}
 								/>
 								<SignalPill
 									icon={BadgeCheck}
-									label={data.metrics[1]?.label ?? "Verification"}
+									label={data.metrics[1]?.label ?? "Tickets created"}
 									value={data.metrics[1]?.value ?? "0"}
 								/>
 								<SignalPill
 									icon={Clock3}
-									label={data.metrics[3]?.label ?? "Intake age"}
-									value={data.metrics[3]?.value ?? "0m"}
+									label={data.metrics[3]?.label ?? "Accounts onboarded"}
+									value={data.metrics[3]?.value ?? "0"}
 								/>
 							</div>
 							<div className="flex flex-wrap items-center gap-3">
 								<Button asChild size="lg" className="rounded-full">
-									<Link to="/intake">
-										Open intake
+									<Link to="/bugs">
+										Open bugs
 										<ArrowRight />
 									</Link>
+								</Button>
+								<Button
+									asChild
+									variant="secondary"
+									size="lg"
+									className="rounded-full"
+								>
+									<Link to="/accounts">Open accounts</Link>
 								</Button>
 								<Button
 									asChild
@@ -203,7 +211,7 @@ function OverviewScreen({
 						</div>
 
 						<div className="rounded-3xl border border-white/12 bg-white/8 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-							<p className="eyebrow text-white/72">Shift status</p>
+							<p className="eyebrow text-white/72">Admin status</p>
 							<p className="mt-3 text-2xl font-semibold tracking-tight">
 								{data.shiftLabel}
 							</p>
@@ -241,7 +249,7 @@ function OverviewScreen({
 						</Badge>
 						<CardTitle className="text-2xl">Activity feed</CardTitle>
 						<CardDescription>
-							A tight operator log instead of placeholder SaaS growth numbers.
+							A tight operator log instead of generic dashboard vanity metrics.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -258,7 +266,7 @@ function OverviewScreen({
 							<EmptyPanel
 								icon={Activity}
 								title="No system activity yet"
-								description="Recent queue movements, verifications, and escalations will appear here once the first workflow event lands."
+								description="Recent account changes, bug events, ticket syncs, and notification activity will appear here once the first workflow event lands."
 							/>
 						)}
 					</CardContent>
@@ -275,12 +283,12 @@ function OverviewScreen({
 				<Card className="surface panel-border">
 					<CardHeader className="space-y-3">
 						<Badge variant="outline" className="w-fit">
-							Queue health
+							Workflow posture
 						</Badge>
-						<CardTitle className="text-2xl">Bugfixes workflow lanes</CardTitle>
+						<CardTitle className="text-2xl">Admin workflow lanes</CardTitle>
 						<CardDescription>
-							The overview keeps intake, investigation, and ship-room pressure
-							visible.
+							The overview keeps bug intake, ticket sync, agent health, and
+							notification pressure visible.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -296,8 +304,8 @@ function OverviewScreen({
 						) : (
 							<EmptyPanel
 								icon={Radar}
-								title="All lanes are clear"
-								description="Queue counts will fill in here once Daphne exposes workflow totals or the first incident enters triage."
+								title="All admin lanes are clear"
+								description="Workflow totals will appear here once Daphne exposes the underlying dashboard feed or the first event lands."
 							/>
 						)}
 					</CardContent>
@@ -306,15 +314,15 @@ function OverviewScreen({
 				<Card className="surface panel-border">
 					<CardHeader className="space-y-3">
 						<div className="flex items-center gap-2">
-							<Badge variant="outline">Ship room</Badge>
-							<Badge variant="secondary">Current watchlist</Badge>
+							<Badge variant="outline">Watchlist</Badge>
+							<Badge variant="secondary">Operator follow-up</Badge>
 						</div>
 						<CardTitle className="text-2xl">
-							What needs operator attention
+							What needs admin attention
 						</CardTitle>
 						<CardDescription>
-							Short, action-oriented cards for the bugs most likely to shape the
-							next release.
+							Short, action-oriented cards for the accounts, agents, bugs, and
+							notifications most likely to need follow-up next.
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-4 md:grid-cols-3">
@@ -326,8 +334,8 @@ function OverviewScreen({
 							<div className="md:col-span-3">
 								<EmptyPanel
 									icon={ShieldAlert}
-									title="No hot issues on the watchlist"
-									description="Escalated bugs, release blockers, and fixes waiting for verification will show here."
+									title="No hot items on the watchlist"
+									description="Escalated bugs, stale agents, ticket sync failures, and noisy notifications will show here."
 								/>
 							</div>
 						)}
@@ -339,9 +347,9 @@ function OverviewScreen({
 				<Card className="surface panel-border">
 					<CardHeader className="space-y-3">
 						<Badge variant="outline" className="w-fit">
-							Coverage notes
+							Platform notes
 						</Badge>
-						<CardTitle className="text-2xl">Operator context</CardTitle>
+						<CardTitle className="text-2xl">Admin context</CardTitle>
 						<CardDescription>
 							Compact notes that keep the board useful even when the live feed
 							is still thin.
@@ -360,8 +368,8 @@ function OverviewScreen({
 						) : (
 							<EmptyPanel
 								icon={CircleAlert}
-								title="No handoff notes yet"
-								description="Coverage summaries, staffing notes, and the next handoff time will appear here when the board has context to share."
+								title="No platform notes yet"
+								description="Account setup notes, agent posture, and the next admin review time will appear here when the board has context to share."
 							/>
 						)}
 					</CardContent>
@@ -373,25 +381,25 @@ function OverviewScreen({
 							Why this page exists
 						</Badge>
 						<CardTitle className="text-2xl">
-							Useful before every module is built
+							Useful before every admin module is built
 						</CardTitle>
 						<CardDescription>
 							This overview is designed to read well in three states: live,
-							fallback snapshot, and quiet board.
+							fallback snapshot, and quiet admin board.
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-4 md:grid-cols-3">
 						<SummaryCard
 							title="Live feed"
-							description="When Daphne serves `/api/dashboard/overview`, the dashboard hydrates directly from live workflow activity."
+							description="When Daphne serves `/api/dashboard/overview`, the dashboard hydrates directly from live admin and bug activity."
 						/>
 						<SummaryCard
 							title="Snapshot fallback"
-							description="If that endpoint is absent, the board stays useful with seeded Bugfixes data instead of empty template cards."
+							description="If that endpoint is absent, the board stays useful with seeded Bugfixes operator data instead of empty template cards."
 						/>
 						<SummaryCard
 							title="Quiet board"
-							description="Use `?mode=empty` to preview the explicit no-data state and confirm the layout remains coherent."
+							description="Use `?mode=empty` to preview the explicit no-data state and confirm the layout remains coherent on both desktop and mobile."
 						/>
 					</CardContent>
 				</Card>
@@ -672,7 +680,7 @@ function getSourceConfig(source: OverviewSource | "empty") {
 			label: "Live signal",
 			badgeVariant: "default" as const,
 			description:
-				"The board is hydrated from Daphne workflow data, so queue movement and recent events reflect the active operational state.",
+				"The board is hydrated from Daphne admin data, so recent events and workflow lanes reflect the active operational state.",
 		};
 	}
 
@@ -681,7 +689,7 @@ function getSourceConfig(source: OverviewSource | "empty") {
 			label: "Quiet board",
 			badgeVariant: "outline" as const,
 			description:
-				"No recent workflow activity is available yet, but the overview still shows what will populate once intake begins.",
+				"No recent admin activity is available yet, but the overview still shows what will populate once accounts, agents, and bug intake begin.",
 		};
 	}
 

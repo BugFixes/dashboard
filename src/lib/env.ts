@@ -18,7 +18,7 @@ export function resolveEnv(source: EnvSource) {
 	const flagsAgentId = readEnvValue(source, "VITE_FLAGS_AGENT_ID");
 
 	return {
-		appName: "Daphne Dashboard",
+		appName: "Bugfixes Dashboard",
 		appUrl,
 		daphneUrl,
 		clerkPublishableKey,

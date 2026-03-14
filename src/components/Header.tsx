@@ -16,7 +16,7 @@ export default function Header() {
 					>
 						<span className="status-dot bg-emerald-500" />
 						<span className="font-display text-sm font-semibold tracking-[0.18em] uppercase">
-							Daphne
+							Bugfixes
 						</span>
 						<Badge variant="secondary" className="hidden sm:inline-flex">
 							Dashboard
@@ -34,11 +34,11 @@ export default function Header() {
 						Overview
 					</Link>
 					<Link
-						to="/setup"
+						to="/settings"
 						className="nav-link"
 						activeProps={{ className: "nav-link is-active" }}
 					>
-						Setup
+						Settings
 					</Link>
 					<a
 						href="https://tanstack.com/start/latest/docs/framework/react/overview"
