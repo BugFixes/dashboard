@@ -6,9 +6,8 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import DashboardShell from "#/components/dashboard-shell";
 import AppFlagsProvider from "#/integrations/flags/provider";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import ClerkProvider from "../integrations/clerk/provider";
 import appCss from "../styles.css?url";
 
@@ -53,11 +52,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<body className="font-sans antialiased [overflow-wrap:anywhere]">
 				<ClerkProvider>
 					<AppFlagsProvider>
-						<div className="min-h-screen">
-							<Header />
-							{children}
-							<Footer />
-						</div>
+						<DashboardShell>{children}</DashboardShell>
 						{import.meta.env.DEV ? (
 							<TanStackDevtools
 								config={{
