@@ -267,6 +267,16 @@ pre code {
     linear-gradient(135deg, #0f172a 0%, #13253a 46%, #1c3658 100%);
 }
 
+.overview-hero {
+  position: relative;
+  color: white;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(248, 250, 252, 0.16), transparent 28%),
+    radial-gradient(circle at 100% 0, rgba(34, 197, 94, 0.18), transparent 30%),
+    radial-gradient(circle at 86% 84%, rgba(248, 113, 113, 0.18), transparent 26%),
+    linear-gradient(145deg, #09111f 0%, #0f2036 42%, #183657 100%);
+}
+
 .hero-panel::after {
   content: '';
   position: absolute;
@@ -275,6 +285,16 @@ pre code {
   background:
     linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 35%),
     linear-gradient(transparent 0%, rgba(255, 255, 255, 0.03) 100%);
+}
+
+.overview-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.06), transparent 32%),
+    linear-gradient(transparent 0%, rgba(255, 255, 255, 0.035) 100%);
 }
 
 .eyebrow {
@@ -335,6 +355,30 @@ pre code {
   height: 0.7rem;
   border-radius: 999px;
   box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 20%, transparent);
+}
+
+.tone-dot {
+  display: inline-flex;
+  width: 0.8rem;
+  height: 0.8rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 18%, transparent);
+}
+
+.queue-track {
+  height: 0.7rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 88%, transparent);
+}
+
+.queue-fill {
+  height: 100%;
+  border-radius: 999px;
+  box-shadow: 0 10px 20px color-mix(in oklab, currentColor 28%, transparent);
+  transition: width 220ms ease;
 }
 
 .fade-up {
