@@ -51,6 +51,16 @@ bun run format
 bun run check
 ```
 
+## GitHub enforcement
+
+The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that runs these checks for pull requests into `main`:
+
+- `CI / Check`
+- `CI / Test`
+- `CI / Build`
+
+To make failed checks block merges, add a branch protection rule or ruleset for `main` in GitHub and mark those three status checks as required.
+
 ## Scaffold contents
 
 - `src/start.ts` adds Clerk request middleware when `CLERK_SECRET_KEY` is present.
