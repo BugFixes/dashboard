@@ -17,7 +17,7 @@
     "format": "biome format --write .",
     "lint": "biome lint .",
     "check": "biome check .",
-    "start": "bun run dist/server/server.js"
+    "start": "bun run server.ts"
   },
   "dependencies": {
     "@clerk/react": "^6.1.0",
