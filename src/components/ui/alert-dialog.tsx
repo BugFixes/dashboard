@@ -4,9 +4,7 @@ import type * as React from "react";
 import { buttonVariants } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
 
-function AlertDialogRoot(
-	props: React.ComponentProps<typeof AlertDialog.Root>,
-) {
+function AlertDialogRoot(props: React.ComponentProps<typeof AlertDialog.Root>) {
 	return <AlertDialog.Root {...props} />;
 }
 

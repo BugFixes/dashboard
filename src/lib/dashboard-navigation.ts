@@ -57,7 +57,8 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/members/index.tsx",
 		label: "Members",
 		shortLabel: "Members",
-		description: "Organization member roles, access levels, and role assignment.",
+		description:
+			"Organization member roles, access levels, and role assignment.",
 		icon: Users,
 		futureChildren: [],
 	},

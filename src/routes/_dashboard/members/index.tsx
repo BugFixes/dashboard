@@ -12,11 +12,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "#/components/ui/alert-dialog";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "#/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import {
 	Card,
@@ -30,8 +26,8 @@ import { Skeleton } from "#/components/ui/skeleton";
 import { env } from "#/lib/env";
 import {
 	type MemberRole,
-	type OrgMember,
 	normalizeRole,
+	type OrgMember,
 	snapshotMemberList,
 	updateMemberRole,
 } from "#/lib/members";
@@ -359,9 +355,7 @@ function MemberRow({
 					<p className="truncate text-sm text-muted-foreground">
 						{member.email}
 					</p>
-					{error ? (
-						<p className="text-xs text-destructive">{error}</p>
-					) : null}
+					{error ? <p className="text-xs text-destructive">{error}</p> : null}
 				</div>
 			</div>
 
@@ -369,9 +363,7 @@ function MemberRow({
 				{isAdmin && !isPending ? (
 					<select
 						value={member.role}
-						onChange={(e) =>
-							onRoleChange(member, e.target.value as MemberRole)
-						}
+						onChange={(e) => onRoleChange(member, e.target.value as MemberRole)}
 						className="h-8 rounded-md border border-input bg-background px-2 py-1 text-sm shadow-xs outline-none focus:border-ring focus:ring-[3px] focus:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						<option value="viewer">Viewer</option>
@@ -386,13 +378,7 @@ function MemberRow({
 	);
 }
 
-function RoleBadge({
-	role,
-	pending,
-}: {
-	role: MemberRole;
-	pending?: boolean;
-}) {
+function RoleBadge({ role, pending }: { role: MemberRole; pending?: boolean }) {
 	if (pending) {
 		return (
 			<Badge variant="secondary" className="animate-pulse">
