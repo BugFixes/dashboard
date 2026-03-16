@@ -57,7 +57,12 @@ function BugDetailRoute() {
 			setScreenState({ kind: "loading" });
 		});
 
-		void resolveBugDetail(bugId, clerkOrgId, clerkUserId, abortController.signal)
+		void resolveBugDetail(
+			bugId,
+			clerkOrgId,
+			clerkUserId,
+			abortController.signal,
+		)
 			.then((result) => {
 				startTransition(() => {
 					setScreenState({
