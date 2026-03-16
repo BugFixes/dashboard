@@ -17,6 +17,7 @@ import { Route as DashboardNotificationsIndexRouteImport } from './routes/_dashb
 import { Route as DashboardBugsIndexRouteImport } from './routes/_dashboard/bugs/index'
 import { Route as DashboardAgentsIndexRouteImport } from './routes/_dashboard/agents/index'
 import { Route as DashboardAccountsIndexRouteImport } from './routes/_dashboard/accounts/index'
+import { Route as DashboardBugsBugIdRouteImport } from './routes/_dashboard/bugs/$bugId'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/_dashboard',
@@ -58,9 +59,15 @@ const DashboardAccountsIndexRoute = DashboardAccountsIndexRouteImport.update({
   path: '/accounts/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardBugsBugIdRoute = DashboardBugsBugIdRouteImport.update({
+  id: '/bugs/$bugId',
+  path: '/bugs/$bugId',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof DashboardIndexRoute
+  '/bugs/$bugId': typeof DashboardBugsBugIdRoute
   '/accounts/': typeof DashboardAccountsIndexRoute
   '/agents/': typeof DashboardAgentsIndexRoute
   '/bugs/': typeof DashboardBugsIndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof DashboardIndexRoute
+  '/bugs/$bugId': typeof DashboardBugsBugIdRoute
   '/accounts': typeof DashboardAccountsIndexRoute
   '/agents': typeof DashboardAgentsIndexRoute
   '/bugs': typeof DashboardBugsIndexRoute
@@ -81,6 +89,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_dashboard': typeof DashboardRouteRouteWithChildren
   '/_dashboard/': typeof DashboardIndexRoute
+  '/_dashboard/bugs/$bugId': typeof DashboardBugsBugIdRoute
   '/_dashboard/accounts/': typeof DashboardAccountsIndexRoute
   '/_dashboard/agents/': typeof DashboardAgentsIndexRoute
   '/_dashboard/bugs/': typeof DashboardBugsIndexRoute
@@ -92,6 +101,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bugs/$bugId'
     | '/accounts/'
     | '/agents/'
     | '/bugs/'
@@ -101,6 +111,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bugs/$bugId'
     | '/accounts'
     | '/agents'
     | '/bugs'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_dashboard'
     | '/_dashboard/'
+    | '/_dashboard/bugs/$bugId'
     | '/_dashboard/accounts/'
     | '/_dashboard/agents/'
     | '/_dashboard/bugs/'
@@ -181,11 +193,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAccountsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/_dashboard/bugs/$bugId': {
+      id: '/_dashboard/bugs/$bugId'
+      path: '/bugs/$bugId'
+      fullPath: '/bugs/$bugId'
+      preLoaderRoute: typeof DashboardBugsBugIdRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
   }
 }
 
 interface DashboardRouteRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBugsBugIdRoute: typeof DashboardBugsBugIdRoute
   DashboardAccountsIndexRoute: typeof DashboardAccountsIndexRoute
   DashboardAgentsIndexRoute: typeof DashboardAgentsIndexRoute
   DashboardBugsIndexRoute: typeof DashboardBugsIndexRoute
@@ -196,6 +216,7 @@ interface DashboardRouteRouteChildren {
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBugsBugIdRoute: DashboardBugsBugIdRoute,
   DashboardAccountsIndexRoute: DashboardAccountsIndexRoute,
   DashboardAgentsIndexRoute: DashboardAgentsIndexRoute,
   DashboardBugsIndexRoute: DashboardBugsIndexRoute,

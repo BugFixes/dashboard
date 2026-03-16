@@ -5,7 +5,6 @@ import {
 	BadgeCheck,
 	CircleAlert,
 	Clock3,
-	ExternalLink,
 	Radar,
 	ShieldAlert,
 	Siren,
@@ -22,7 +21,6 @@ import {
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
 import { Skeleton } from "#/components/ui/skeleton";
-import { env } from "#/lib/env";
 import {
 	type ActivityItem,
 	type CoverageNote,
@@ -196,17 +194,6 @@ function OverviewScreen({
 								>
 									<Link to="/accounts">Open accounts</Link>
 								</Button>
-								<Button
-									asChild
-									variant="secondary"
-									size="lg"
-									className="rounded-full border border-white/12 bg-white/10 text-white hover:bg-white/16"
-								>
-									<a href={env.daphneUrl} target="_blank" rel="noreferrer">
-										Open Daphne
-										<ExternalLink />
-									</a>
-								</Button>
 							</div>
 						</div>
 
@@ -223,12 +210,6 @@ function OverviewScreen({
 									<span className="text-sm text-slate-100/80">Snapshot</span>
 									<span className="text-sm font-medium text-white">
 										{data.snapshotTakenAt}
-									</span>
-								</div>
-								<div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/14 px-4 py-3">
-									<span className="text-sm text-slate-100/80">Daphne</span>
-									<span className="text-sm font-medium text-white">
-										{env.daphneUrl}
 									</span>
 								</div>
 								<div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/14 px-4 py-3">
