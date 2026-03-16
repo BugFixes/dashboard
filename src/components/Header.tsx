@@ -1,7 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Badge } from "#/components/ui/badge";
-import { Button } from "#/components/ui/button";
-import { env } from "#/lib/env";
 import ClerkHeader from "../integrations/clerk/header-user.tsx";
 import ThemeToggle from "./ThemeToggle";
 
@@ -62,16 +60,6 @@ export default function Header() {
 					<Badge variant="outline" className="hidden sm:inline-flex">
 						Bun runtime
 					</Badge>
-					<Button
-						asChild
-						variant="ghost"
-						size="sm"
-						className="hidden md:inline-flex"
-					>
-						<a href={env.daphneUrl} target="_blank" rel="noreferrer">
-							Open Daphne
-						</a>
-					</Button>
 					<ClerkHeader />
 					<ThemeToggle />
 				</div>

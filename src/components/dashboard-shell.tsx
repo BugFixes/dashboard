@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ArrowUpRight, Menu, PanelLeft, X } from "lucide-react";
+import { Menu, PanelLeft, X } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import AdminAccessGate from "#/components/admin-access-gate";
 import ClerkHeader from "#/integrations/clerk/header-user";
@@ -7,7 +7,6 @@ import {
 	dashboardNavItems,
 	getActiveDashboardItem,
 } from "#/lib/dashboard-navigation";
-import { env } from "#/lib/env";
 import ThemeToggle from "./ThemeToggle";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -118,16 +117,6 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 							account setup, agent management, and bug investigation workflows
 							fill in underneath.
 						</p>
-						<Button
-							asChild
-							variant="outline"
-							className="w-full justify-between"
-						>
-							<a href={env.daphneUrl} target="_blank" rel="noreferrer">
-								Open Daphne
-								<ArrowUpRight />
-							</a>
-						</Button>
 					</div>
 				</div>
 			</aside>
@@ -160,17 +149,6 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 						</div>
 
 						<div className="flex items-center gap-2">
-							<Button
-								asChild
-								variant="ghost"
-								size="sm"
-								className="hidden md:inline-flex"
-							>
-								<a href={env.daphneUrl} target="_blank" rel="noreferrer">
-									Open Daphne
-									<ArrowUpRight />
-								</a>
-							</Button>
 							<ThemeToggle />
 							<ClerkHeader />
 						</div>
