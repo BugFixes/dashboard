@@ -52,7 +52,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 	return (
 		<div className="dashboard-shell min-h-screen lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
 			<aside className="hidden p-4 lg:block">
-				<div className="dashboard-sidebar-frame flex h-[calc(100vh-2rem)] flex-col gap-6 overflow-hidden rounded-[28px] border border-[var(--line)] p-5">
+				<div className="dashboard-sidebar-frame flex flex-col gap-6 rounded-[28px] border border-[var(--line)] p-5">
 					<div className="space-y-4">
 						<div className="flex items-start justify-between gap-3">
 							<div className="space-y-2">
@@ -79,7 +79,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 						</div>
 					</div>
 
-					<nav className="flex-1 space-y-2" aria-label="Primary">
+					<nav className="space-y-2" aria-label="Primary">
 						{dashboardNavItems.map((item) => {
 							const Icon = item.icon;
 

@@ -85,7 +85,7 @@ export const snapshotBugList: BugListData = {
 		"Incoming stacktraces, deduplication clusters, and investigation entrypoints for the operator shift.",
 	bugs: [
 		{
-			id: "bug-1",
+			id: "0ecb8ffe-9be6-4f2a-8329-3febc7b824ed",
 			title: "NullPointerException in CheckoutService.processPayment",
 			severity: "error",
 			language: "java",
@@ -98,7 +98,7 @@ export const snapshotBugList: BugListData = {
 			tone: "critical",
 		},
 		{
-			id: "bug-2",
+			id: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
 			title: "TypeError: Cannot read property 'userId' of undefined",
 			severity: "error",
 			language: "typescript",
@@ -111,7 +111,7 @@ export const snapshotBugList: BugListData = {
 			tone: "critical",
 		},
 		{
-			id: "bug-3",
+			id: "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
 			title: "IndexError: list index out of range in batch_processor",
 			severity: "error",
 			language: "python",
@@ -124,7 +124,7 @@ export const snapshotBugList: BugListData = {
 			tone: "warn",
 		},
 		{
-			id: "bug-4",
+			id: "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
 			title: "panic: runtime error: index out of range [3] with length 2",
 			severity: "warn",
 			language: "go",
@@ -137,7 +137,7 @@ export const snapshotBugList: BugListData = {
 			tone: "warn",
 		},
 		{
-			id: "bug-5",
+			id: "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
 			title: "ActiveRecord::RecordNotFound in AccountsController#show",
 			severity: "warn",
 			language: "ruby",
@@ -150,7 +150,7 @@ export const snapshotBugList: BugListData = {
 			tone: "good",
 		},
 		{
-			id: "bug-6",
+			id: "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
 			title: "SIGSEGV in image_resize_worker thread pool",
 			severity: "fatal",
 			language: "rust",
@@ -173,8 +173,8 @@ export const emptyBugList: BugListData = {
 };
 
 const snapshotBugDetails: Record<string, BugDetail> = {
-	"bug-1": {
-		id: "bug-1",
+	"0ecb8ffe-9be6-4f2a-8329-3febc7b824ed": {
+		id: "0ecb8ffe-9be6-4f2a-8329-3febc7b824ed",
 		title: "NullPointerException in CheckoutService.processPayment",
 		severity: "error",
 		language: "java",
@@ -268,8 +268,8 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 			},
 		],
 	},
-	"bug-2": {
-		id: "bug-2",
+	"1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": {
+		id: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
 		title: "TypeError: Cannot read property 'userId' of undefined",
 		severity: "error",
 		language: "typescript",
@@ -341,8 +341,8 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 			},
 		],
 	},
-	"bug-3": {
-		id: "bug-3",
+	"2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e": {
+		id: "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
 		title: "IndexError: list index out of range in batch_processor",
 		severity: "error",
 		language: "python",
@@ -412,8 +412,8 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 			},
 		],
 	},
-	"bug-4": {
-		id: "bug-4",
+	"3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f": {
+		id: "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
 		title: "panic: runtime error: index out of range [3] with length 2",
 		severity: "warn",
 		language: "go",
@@ -460,8 +460,8 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 			},
 		],
 	},
-	"bug-5": {
-		id: "bug-5",
+	"4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a": {
+		id: "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
 		title: "ActiveRecord::RecordNotFound in AccountsController#show",
 		severity: "warn",
 		language: "ruby",
@@ -517,8 +517,8 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 			},
 		],
 	},
-	"bug-6": {
-		id: "bug-6",
+	"5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b": {
+		id: "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
 		title: "SIGSEGV in image_resize_worker thread pool",
 		severity: "fatal",
 		language: "rust",
@@ -577,12 +577,16 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 
 export async function resolveBugList(
 	clerkOrgId?: string | null,
+	clerkUserId?: string | null,
 	signal?: AbortSignal,
 ): Promise<{ data: BugListData; source: BugSource }> {
 	try {
 		const headers: Record<string, string> = { accept: "application/json" };
 		if (clerkOrgId) {
 			headers["X-Clerk-Org-Id"] = clerkOrgId;
+		}
+		if (clerkUserId) {
+			headers["X-Clerk-User-Id"] = clerkUserId;
 		}
 		const response = await fetch(
 			new URL("/api/dashboard/bugs", env.daphneUrl),
@@ -612,12 +616,16 @@ export async function resolveBugList(
 export async function resolveBugDetail(
 	bugId: string,
 	clerkOrgId?: string | null,
+	clerkUserId?: string | null,
 	signal?: AbortSignal,
 ): Promise<{ data: BugDetail | null; source: BugSource }> {
 	try {
 		const headers: Record<string, string> = { accept: "application/json" };
 		if (clerkOrgId) {
 			headers["X-Clerk-Org-Id"] = clerkOrgId;
+		}
+		if (clerkUserId) {
+			headers["X-Clerk-User-Id"] = clerkUserId;
 		}
 		const response = await fetch(
 			new URL(

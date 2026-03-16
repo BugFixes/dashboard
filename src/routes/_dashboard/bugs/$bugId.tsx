@@ -1,4 +1,4 @@
-import { useOrganization } from "@clerk/react";
+import { useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowLeft,
@@ -42,7 +42,9 @@ export const Route = createFileRoute("/_dashboard/bugs/$bugId")({
 function BugDetailRoute() {
 	const { bugId } = Route.useParams();
 	const { organization } = useOrganization();
+	const { userId } = useAuth();
 	const clerkOrgId = organization?.id ?? null;
+	const clerkUserId = userId ?? null;
 	const [screenState, setScreenState] = useState<
 		| { kind: "loading" }
 		| { kind: "ready"; data: BugDetail | null; source: BugSource }
@@ -55,7 +57,12 @@ function BugDetailRoute() {
 			setScreenState({ kind: "loading" });
 		});
 
-		void resolveBugDetail(bugId, clerkOrgId, abortController.signal)
+		void resolveBugDetail(
+			bugId,
+			clerkOrgId,
+			clerkUserId,
+			abortController.signal,
+		)
 			.then((result) => {
 				startTransition(() => {
 					setScreenState({
@@ -80,7 +87,7 @@ function BugDetailRoute() {
 			});
 
 		return () => abortController.abort();
-	}, [bugId, clerkOrgId]);
+	}, [bugId, clerkOrgId, clerkUserId]);
 
 	if (screenState.kind === "loading") {
 		return <BugDetailSkeleton />;
