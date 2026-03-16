@@ -12,7 +12,7 @@ export default function Header() {
 						to="/"
 						className="inline-flex items-center gap-3 rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] px-3 py-1.5 no-underline shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
 					>
-						<span className="status-dot bg-emerald-500" />
+						<img src="/logo192.png" alt="Bugfixes" className="h-5 w-5" />
 						<span className="font-display text-sm font-semibold tracking-[0.18em] uppercase">
 							Bugfixes
 						</span>
