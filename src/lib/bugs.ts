@@ -185,24 +185,87 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 		account: "Acme Corp",
 		agent: "web-prod-eu-1",
 		hash: "a4f8c91d2e7b3f60e1842d9c5a7b6f83024e91d7c8a5b3f2e6d4c0a1b9e8f7d2",
-		stacktrace: "java.lang.NullPointerException: Cannot invoke \"com.acme.model.Cart.getItems()\" because \"cart\" is null\n    at com.acme.service.CheckoutService.processPayment(CheckoutService.java:142)\n    at com.acme.service.CheckoutService.checkout(CheckoutService.java:87)\n    at com.acme.controller.CheckoutController.submit(CheckoutController.java:63)\n    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n    at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)\n    at javax.servlet.http.HttpServlet.service(HttpServlet.java:750)\n    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)\n    at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:213)",
-		normalizedStacktrace: "NullPointerException\n    CheckoutService.processPayment:142\n    CheckoutService.checkout:87\n    CheckoutController.submit:63\n    FrameworkServlet.service:897\n    HttpServlet.service:750",
+		stacktrace:
+			'java.lang.NullPointerException: Cannot invoke "com.acme.model.Cart.getItems()" because "cart" is null\n    at com.acme.service.CheckoutService.processPayment(CheckoutService.java:142)\n    at com.acme.service.CheckoutService.checkout(CheckoutService.java:87)\n    at com.acme.controller.CheckoutController.submit(CheckoutController.java:63)\n    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n    at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)\n    at javax.servlet.http.HttpServlet.service(HttpServlet.java:750)\n    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)\n    at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:213)',
+		normalizedStacktrace:
+			"NullPointerException\n    CheckoutService.processPayment:142\n    CheckoutService.checkout:87\n    CheckoutController.submit:63\n    FrameworkServlet.service:897\n    HttpServlet.service:750",
 		occurrences: [
-			{ id: "occ-1a", timestamp: "2026-03-15T13:47:00+00:00", severity: "error", environment: "production", service: "checkout-api", agent: "web-prod-eu-1" },
-			{ id: "occ-1b", timestamp: "2026-03-15T13:22:00+00:00", severity: "error", environment: "production", service: "checkout-api", agent: "web-prod-eu-2" },
-			{ id: "occ-1c", timestamp: "2026-03-15T12:58:00+00:00", severity: "error", environment: "production", service: "checkout-api", agent: "web-prod-us-1" },
-			{ id: "occ-1d", timestamp: "2026-03-15T11:14:00+00:00", severity: "error", environment: "production", service: "checkout-api", agent: "web-prod-eu-1" },
-			{ id: "occ-1e", timestamp: "2026-03-14T22:01:00+00:00", severity: "error", environment: "staging", service: "checkout-api", agent: "web-stg-eu-1" },
+			{
+				id: "occ-1a",
+				timestamp: "2026-03-15T13:47:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "checkout-api",
+				agent: "web-prod-eu-1",
+			},
+			{
+				id: "occ-1b",
+				timestamp: "2026-03-15T13:22:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "checkout-api",
+				agent: "web-prod-eu-2",
+			},
+			{
+				id: "occ-1c",
+				timestamp: "2026-03-15T12:58:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "checkout-api",
+				agent: "web-prod-us-1",
+			},
+			{
+				id: "occ-1d",
+				timestamp: "2026-03-15T11:14:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "checkout-api",
+				agent: "web-prod-eu-1",
+			},
+			{
+				id: "occ-1e",
+				timestamp: "2026-03-14T22:01:00+00:00",
+				severity: "error",
+				environment: "staging",
+				service: "checkout-api",
+				agent: "web-stg-eu-1",
+			},
 		],
 		tickets: [
-			{ id: "tkt-1", provider: "jira", remoteId: "ACME-4821", remoteUrl: "#", priority: "critical", status: "open", createdAt: "2026-03-14T09:00:00+00:00" },
+			{
+				id: "tkt-1",
+				provider: "jira",
+				remoteId: "ACME-4821",
+				remoteUrl: "#",
+				priority: "critical",
+				status: "open",
+				createdAt: "2026-03-14T09:00:00+00:00",
+			},
 		],
 		notifications: [
-			{ id: "ntf-1a", provider: "slack", message: "P1 bug detected in checkout", sentAt: "2026-03-14T08:15:00+00:00" },
-			{ id: "ntf-1b", provider: "resend", message: "Critical: CheckoutService NPE", sentAt: "2026-03-14T08:16:00+00:00" },
+			{
+				id: "ntf-1a",
+				provider: "slack",
+				message: "P1 bug detected in checkout",
+				sentAt: "2026-03-14T08:15:00+00:00",
+			},
+			{
+				id: "ntf-1b",
+				provider: "resend",
+				message: "Critical: CheckoutService NPE",
+				sentAt: "2026-03-14T08:16:00+00:00",
+			},
 		],
 		notificationEvents: [
-			{ id: "ne-1a", provider: "slack", status: "sent", reason: "severity >= error", severity: "error", ticketAction: "created", occurredAt: "2026-03-14T08:15:00+00:00" },
+			{
+				id: "ne-1a",
+				provider: "slack",
+				status: "sent",
+				reason: "severity >= error",
+				severity: "error",
+				ticketAction: "created",
+				occurredAt: "2026-03-14T08:15:00+00:00",
+			},
 		],
 	},
 	"bug-2": {
@@ -217,21 +280,65 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 		account: "Northwind",
 		agent: "api-prod-1",
 		hash: "e7c3b82f1a49d5c6a0b3e8f2d1c7a4b9e6f3d0c8a5b2e9f7d4c1a0b8e5f3d2c9",
-		stacktrace: "TypeError: Cannot read property 'userId' of undefined\n    at AuthMiddleware.validate (/app/src/middleware/auth.ts:34:22)\n    at AuthMiddleware.handle (/app/src/middleware/auth.ts:18:16)\n    at processTickByOrder (/app/node_modules/express/lib/router/index.js:284:7)\n    at next (/app/node_modules/express/lib/router/route.js:149:14)\n    at SessionParser.parse (/app/src/middleware/session.ts:47:5)\n    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)",
-		normalizedStacktrace: "TypeError: Cannot read property 'userId' of undefined\n    AuthMiddleware.validate:34\n    AuthMiddleware.handle:18\n    SessionParser.parse:47",
+		stacktrace:
+			"TypeError: Cannot read property 'userId' of undefined\n    at AuthMiddleware.validate (/app/src/middleware/auth.ts:34:22)\n    at AuthMiddleware.handle (/app/src/middleware/auth.ts:18:16)\n    at processTickByOrder (/app/node_modules/express/lib/router/index.js:284:7)\n    at next (/app/node_modules/express/lib/router/route.js:149:14)\n    at SessionParser.parse (/app/src/middleware/session.ts:47:5)\n    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)",
+		normalizedStacktrace:
+			"TypeError: Cannot read property 'userId' of undefined\n    AuthMiddleware.validate:34\n    AuthMiddleware.handle:18\n    SessionParser.parse:47",
 		occurrences: [
-			{ id: "occ-2a", timestamp: "2026-03-15T14:02:00+00:00", severity: "error", environment: "production", service: "auth-service", agent: "api-prod-1" },
-			{ id: "occ-2b", timestamp: "2026-03-15T13:41:00+00:00", severity: "error", environment: "production", service: "auth-service", agent: "api-prod-2" },
-			{ id: "occ-2c", timestamp: "2026-03-15T12:05:00+00:00", severity: "error", environment: "production", service: "auth-service", agent: "api-prod-1" },
+			{
+				id: "occ-2a",
+				timestamp: "2026-03-15T14:02:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "auth-service",
+				agent: "api-prod-1",
+			},
+			{
+				id: "occ-2b",
+				timestamp: "2026-03-15T13:41:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "auth-service",
+				agent: "api-prod-2",
+			},
+			{
+				id: "occ-2c",
+				timestamp: "2026-03-15T12:05:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "auth-service",
+				agent: "api-prod-1",
+			},
 		],
 		tickets: [
-			{ id: "tkt-2", provider: "linear", remoteId: "NW-312", remoteUrl: "#", priority: "high", status: "open", createdAt: "2026-03-15T06:45:00+00:00" },
+			{
+				id: "tkt-2",
+				provider: "linear",
+				remoteId: "NW-312",
+				remoteUrl: "#",
+				priority: "high",
+				status: "open",
+				createdAt: "2026-03-15T06:45:00+00:00",
+			},
 		],
 		notifications: [
-			{ id: "ntf-2a", provider: "slack", message: "Auth middleware crash in production", sentAt: "2026-03-15T06:33:00+00:00" },
+			{
+				id: "ntf-2a",
+				provider: "slack",
+				message: "Auth middleware crash in production",
+				sentAt: "2026-03-15T06:33:00+00:00",
+			},
 		],
 		notificationEvents: [
-			{ id: "ne-2a", provider: "slack", status: "sent", reason: "severity >= error", severity: "error", ticketAction: "created", occurredAt: "2026-03-15T06:33:00+00:00" },
+			{
+				id: "ne-2a",
+				provider: "slack",
+				status: "sent",
+				reason: "severity >= error",
+				severity: "error",
+				ticketAction: "created",
+				occurredAt: "2026-03-15T06:33:00+00:00",
+			},
 		],
 	},
 	"bug-3": {
@@ -246,21 +353,63 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 		account: "Chewed Feed",
 		agent: "worker-prod-1",
 		hash: "d1f5a07e3c82b9d4e6f0a1c3b5e7d9f2a4c6b8e0d2f4a6c8b0e2d4f6a8c0b2d4",
-		stacktrace: "Traceback (most recent call last):\n  File \"/app/workers/batch_processor.py\", line 89, in process_batch\n    item = batch.items[batch.cursor]\nIndexError: list index out of range\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/app/workers/runner.py\", line 34, in execute\n    processor.process_batch(batch)\n  File \"/app/workers/batch_processor.py\", line 92, in process_batch\n    self.handle_error(batch, e)\n  File \"/app/workers/batch_processor.py\", line 118, in handle_error\n    raise BatchProcessingError(f\"Failed batch {batch.id}\") from original",
-		normalizedStacktrace: "IndexError: list index out of range\n    batch_processor.process_batch:89\n    runner.execute:34\n    batch_processor.handle_error:118",
+		stacktrace:
+			'Traceback (most recent call last):\n  File "/app/workers/batch_processor.py", line 89, in process_batch\n    item = batch.items[batch.cursor]\nIndexError: list index out of range\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/app/workers/runner.py", line 34, in execute\n    processor.process_batch(batch)\n  File "/app/workers/batch_processor.py", line 92, in process_batch\n    self.handle_error(batch, e)\n  File "/app/workers/batch_processor.py", line 118, in handle_error\n    raise BatchProcessingError(f"Failed batch {batch.id}") from original',
+		normalizedStacktrace:
+			"IndexError: list index out of range\n    batch_processor.process_batch:89\n    runner.execute:34\n    batch_processor.handle_error:118",
 		occurrences: [
-			{ id: "occ-3a", timestamp: "2026-03-15T11:18:00+00:00", severity: "error", environment: "production", service: "batch-worker", agent: "worker-prod-1" },
-			{ id: "occ-3b", timestamp: "2026-03-15T04:22:00+00:00", severity: "error", environment: "production", service: "batch-worker", agent: "worker-prod-2" },
+			{
+				id: "occ-3a",
+				timestamp: "2026-03-15T11:18:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "batch-worker",
+				agent: "worker-prod-1",
+			},
+			{
+				id: "occ-3b",
+				timestamp: "2026-03-15T04:22:00+00:00",
+				severity: "error",
+				environment: "production",
+				service: "batch-worker",
+				agent: "worker-prod-2",
+			},
 		],
 		tickets: [
-			{ id: "tkt-3", provider: "jira", remoteId: "CF-1192", remoteUrl: "#", priority: "medium", status: "open", createdAt: "2026-03-14T08:30:00+00:00" },
+			{
+				id: "tkt-3",
+				provider: "jira",
+				remoteId: "CF-1192",
+				remoteUrl: "#",
+				priority: "medium",
+				status: "open",
+				createdAt: "2026-03-14T08:30:00+00:00",
+			},
 		],
 		notifications: [
-			{ id: "ntf-3a", provider: "slack", message: "Batch processing failure", sentAt: "2026-03-13T19:48:00+00:00" },
-			{ id: "ntf-3b", provider: "resend", message: "IndexError in batch_processor", sentAt: "2026-03-13T19:48:00+00:00" },
+			{
+				id: "ntf-3a",
+				provider: "slack",
+				message: "Batch processing failure",
+				sentAt: "2026-03-13T19:48:00+00:00",
+			},
+			{
+				id: "ntf-3b",
+				provider: "resend",
+				message: "IndexError in batch_processor",
+				sentAt: "2026-03-13T19:48:00+00:00",
+			},
 		],
 		notificationEvents: [
-			{ id: "ne-3a", provider: "slack", status: "sent", reason: "severity >= error", severity: "error", ticketAction: "created", occurredAt: "2026-03-13T19:48:00+00:00" },
+			{
+				id: "ne-3a",
+				provider: "slack",
+				status: "sent",
+				reason: "severity >= error",
+				severity: "error",
+				ticketAction: "created",
+				occurredAt: "2026-03-13T19:48:00+00:00",
+			},
 		],
 	},
 	"bug-4": {
@@ -275,16 +424,40 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 		account: "Acme Corp",
 		agent: "ingest-prod-1",
 		hash: "b9e2c74d8f13a5b6c0d2e4f6a8c0b2d4e6f8a0c2b4d6e8f0a2c4b6d8e0f2a4c6",
-		stacktrace: "goroutine 1 [running]:\nmain.(*EventIngester).processEvents(0xc000142000, {0xc000218000, 0x2, 0x2})\n\t/app/cmd/ingest/main.go:187 +0x3a5\nmain.(*EventIngester).handleBatch(0xc000142000, {0xc000228000, 0x3, 0x4})\n\t/app/cmd/ingest/main.go:142 +0x1bc\nmain.(*Server).ServeHTTP(0xc000138000, {0x7f4a2c1d88e0, 0xc0002a6000}, 0xc000284300)\n\t/app/cmd/ingest/server.go:58 +0x2af\nnet/http.serverHandler.ServeHTTP({0xc000138000}, {0x7f4a2c1d88e0, 0xc0002a6000}, 0xc000284300)\n\t/usr/local/go/src/net/http/server.go:2936 +0x316",
-		normalizedStacktrace: "panic: index out of range [3] with length 2\n    EventIngester.processEvents:187\n    EventIngester.handleBatch:142\n    Server.ServeHTTP:58",
+		stacktrace:
+			"goroutine 1 [running]:\nmain.(*EventIngester).processEvents(0xc000142000, {0xc000218000, 0x2, 0x2})\n\t/app/cmd/ingest/main.go:187 +0x3a5\nmain.(*EventIngester).handleBatch(0xc000142000, {0xc000228000, 0x3, 0x4})\n\t/app/cmd/ingest/main.go:142 +0x1bc\nmain.(*Server).ServeHTTP(0xc000138000, {0x7f4a2c1d88e0, 0xc0002a6000}, 0xc000284300)\n\t/app/cmd/ingest/server.go:58 +0x2af\nnet/http.serverHandler.ServeHTTP({0xc000138000}, {0x7f4a2c1d88e0, 0xc0002a6000}, 0xc000284300)\n\t/usr/local/go/src/net/http/server.go:2936 +0x316",
+		normalizedStacktrace:
+			"panic: index out of range [3] with length 2\n    EventIngester.processEvents:187\n    EventIngester.handleBatch:142\n    Server.ServeHTTP:58",
 		occurrences: [
-			{ id: "occ-4a", timestamp: "2026-03-15T09:55:00+00:00", severity: "warn", environment: "production", service: "ingest", agent: "ingest-prod-1" },
-			{ id: "occ-4b", timestamp: "2026-03-14T21:30:00+00:00", severity: "warn", environment: "production", service: "ingest", agent: "ingest-prod-1" },
+			{
+				id: "occ-4a",
+				timestamp: "2026-03-15T09:55:00+00:00",
+				severity: "warn",
+				environment: "production",
+				service: "ingest",
+				agent: "ingest-prod-1",
+			},
+			{
+				id: "occ-4b",
+				timestamp: "2026-03-14T21:30:00+00:00",
+				severity: "warn",
+				environment: "production",
+				service: "ingest",
+				agent: "ingest-prod-1",
+			},
 		],
 		tickets: [],
 		notifications: [],
 		notificationEvents: [
-			{ id: "ne-4a", provider: "slack", status: "skipped", reason: "severity below threshold", severity: "warn", ticketAction: "skipped", occurredAt: "2026-03-14T14:22:00+00:00" },
+			{
+				id: "ne-4a",
+				provider: "slack",
+				status: "skipped",
+				reason: "severity below threshold",
+				severity: "warn",
+				ticketAction: "skipped",
+				occurredAt: "2026-03-14T14:22:00+00:00",
+			},
 		],
 	},
 	"bug-5": {
@@ -299,19 +472,49 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 		account: "Northwind",
 		agent: "rails-prod-1",
 		hash: "f3a1d96b4e28c0d5e7f9a1b3c5d7e9f0a2b4c6d8e0f2a4b6c8d0e2f4a6b8c0d2",
-		stacktrace: "ActiveRecord::RecordNotFound (Couldn't find Account with 'id'=9847):\n  app/controllers/accounts_controller.rb:24:in `show'\n  app/middleware/tenant_resolver.rb:18:in `call'\n  actionpack (7.1.3) lib/action_dispatch/middleware/debug_exceptions.rb:69:in `call'\n  actionpack (7.1.3) lib/action_dispatch/middleware/show_exceptions.rb:32:in `call'\n  railties (7.1.3) lib/rails/rack/logger.rb:40:in `call_app'\n  railties (7.1.3) lib/rails/rack/logger.rb:26:in `call'",
-		normalizedStacktrace: "ActiveRecord::RecordNotFound\n    AccountsController#show:24\n    TenantResolver#call:18",
+		stacktrace:
+			"ActiveRecord::RecordNotFound (Couldn't find Account with 'id'=9847):\n  app/controllers/accounts_controller.rb:24:in `show'\n  app/middleware/tenant_resolver.rb:18:in `call'\n  actionpack (7.1.3) lib/action_dispatch/middleware/debug_exceptions.rb:69:in `call'\n  actionpack (7.1.3) lib/action_dispatch/middleware/show_exceptions.rb:32:in `call'\n  railties (7.1.3) lib/rails/rack/logger.rb:40:in `call_app'\n  railties (7.1.3) lib/rails/rack/logger.rb:26:in `call'",
+		normalizedStacktrace:
+			"ActiveRecord::RecordNotFound\n    AccountsController#show:24\n    TenantResolver#call:18",
 		occurrences: [
-			{ id: "occ-5a", timestamp: "2026-03-14T22:34:00+00:00", severity: "warn", environment: "production", service: "rails-api", agent: "rails-prod-1" },
+			{
+				id: "occ-5a",
+				timestamp: "2026-03-14T22:34:00+00:00",
+				severity: "warn",
+				environment: "production",
+				service: "rails-api",
+				agent: "rails-prod-1",
+			},
 		],
 		tickets: [
-			{ id: "tkt-5", provider: "github", remoteId: "NW-88412", remoteUrl: "#", priority: "low", status: "closed", createdAt: "2026-03-12T12:00:00+00:00" },
+			{
+				id: "tkt-5",
+				provider: "github",
+				remoteId: "NW-88412",
+				remoteUrl: "#",
+				priority: "low",
+				status: "closed",
+				createdAt: "2026-03-12T12:00:00+00:00",
+			},
 		],
 		notifications: [
-			{ id: "ntf-5a", provider: "resend", message: "RecordNotFound in AccountsController", sentAt: "2026-03-12T11:10:00+00:00" },
+			{
+				id: "ntf-5a",
+				provider: "resend",
+				message: "RecordNotFound in AccountsController",
+				sentAt: "2026-03-12T11:10:00+00:00",
+			},
 		],
 		notificationEvents: [
-			{ id: "ne-5a", provider: "resend", status: "sent", reason: "new bug created", severity: "warn", ticketAction: "created", occurredAt: "2026-03-12T11:10:00+00:00" },
+			{
+				id: "ne-5a",
+				provider: "resend",
+				status: "sent",
+				reason: "new bug created",
+				severity: "warn",
+				ticketAction: "created",
+				occurredAt: "2026-03-12T11:10:00+00:00",
+			},
 		],
 	},
 	"bug-6": {
@@ -326,17 +529,48 @@ const snapshotBugDetails: Record<string, BugDetail> = {
 		account: "Chewed Feed",
 		agent: "media-prod-1",
 		hash: "c8d4e2f7a195b3d6e0f2a4c6b8d0e2f4a6c8b0d2e4f6a8c0b2d4e6f8a0c2b4d6",
-		stacktrace: "thread 'worker-3' panicked at 'index out of bounds: the len is 0 but the index is 0', src/resize/pool.rs:214:18\nstack backtrace:\n   0: std::panicking::begin_panic_handler\n   1: core::panicking::panic_fmt\n   2: core::panicking::panic_bounds_check\n   3: media_worker::resize::pool::ResizePool::process_job\n             at ./src/resize/pool.rs:214:18\n   4: media_worker::resize::pool::ResizePool::run_worker\n             at ./src/resize/pool.rs:147:13\n   5: media_worker::main::spawn_workers::{{closure}}\n             at ./src/main.rs:89:9\n   6: std::thread::Builder::spawn_unchecked_::{{closure}}\n             at /rustc/hash/library/std/src/thread/mod.rs:529:17",
-		normalizedStacktrace: "SIGSEGV: index out of bounds\n    ResizePool::process_job:214\n    ResizePool::run_worker:147\n    spawn_workers:89",
+		stacktrace:
+			"thread 'worker-3' panicked at 'index out of bounds: the len is 0 but the index is 0', src/resize/pool.rs:214:18\nstack backtrace:\n   0: std::panicking::begin_panic_handler\n   1: core::panicking::panic_fmt\n   2: core::panicking::panic_bounds_check\n   3: media_worker::resize::pool::ResizePool::process_job\n             at ./src/resize/pool.rs:214:18\n   4: media_worker::resize::pool::ResizePool::run_worker\n             at ./src/resize/pool.rs:147:13\n   5: media_worker::main::spawn_workers::{{closure}}\n             at ./src/main.rs:89:9\n   6: std::thread::Builder::spawn_unchecked_::{{closure}}\n             at /rustc/hash/library/std/src/thread/mod.rs:529:17",
+		normalizedStacktrace:
+			"SIGSEGV: index out of bounds\n    ResizePool::process_job:214\n    ResizePool::run_worker:147\n    spawn_workers:89",
 		occurrences: [
-			{ id: "occ-6a", timestamp: "2026-03-15T13:58:00+00:00", severity: "fatal", environment: "production", service: "media-worker", agent: "media-prod-1" },
-			{ id: "occ-6b", timestamp: "2026-03-15T12:44:00+00:00", severity: "fatal", environment: "production", service: "media-worker", agent: "media-prod-1" },
-			{ id: "occ-6c", timestamp: "2026-03-15T12:00:00+00:00", severity: "fatal", environment: "staging", service: "media-worker", agent: "media-stg-1" },
+			{
+				id: "occ-6a",
+				timestamp: "2026-03-15T13:58:00+00:00",
+				severity: "fatal",
+				environment: "production",
+				service: "media-worker",
+				agent: "media-prod-1",
+			},
+			{
+				id: "occ-6b",
+				timestamp: "2026-03-15T12:44:00+00:00",
+				severity: "fatal",
+				environment: "production",
+				service: "media-worker",
+				agent: "media-prod-1",
+			},
+			{
+				id: "occ-6c",
+				timestamp: "2026-03-15T12:00:00+00:00",
+				severity: "fatal",
+				environment: "staging",
+				service: "media-worker",
+				agent: "media-stg-1",
+			},
 		],
 		tickets: [],
 		notifications: [],
 		notificationEvents: [
-			{ id: "ne-6a", provider: "slack", status: "skipped", reason: "no notification provider configured", severity: "fatal", ticketAction: "skipped", occurredAt: "2026-03-15T12:00:00+00:00" },
+			{
+				id: "ne-6a",
+				provider: "slack",
+				status: "skipped",
+				reason: "no notification provider configured",
+				severity: "fatal",
+				ticketAction: "skipped",
+				occurredAt: "2026-03-15T12:00:00+00:00",
+			},
 		],
 	},
 };
@@ -386,7 +620,10 @@ export async function resolveBugDetail(
 			headers["X-Clerk-Org-Id"] = clerkOrgId;
 		}
 		const response = await fetch(
-			new URL(`/api/dashboard/bugs/${encodeURIComponent(bugId)}`, env.daphneUrl),
+			new URL(
+				`/api/dashboard/bugs/${encodeURIComponent(bugId)}`,
+				env.daphneUrl,
+			),
 			{ headers, signal },
 		);
 
@@ -448,13 +685,9 @@ function normalizeBugSummary(value: unknown): BugSummary | null {
 		severity: readString(value.severity) ?? "—",
 		language: readString(value.language) ?? "—",
 		firstSeen:
-			readString(value.first_seen_at) ??
-			readString(value.firstSeen) ??
-			"—",
+			readString(value.first_seen_at) ?? readString(value.firstSeen) ?? "—",
 		lastSeen:
-			readString(value.last_seen_at) ??
-			readString(value.lastSeen) ??
-			"—",
+			readString(value.last_seen_at) ?? readString(value.lastSeen) ?? "—",
 		occurrenceCount:
 			readNumber(value.occurrence_count) ??
 			readNumber(value.occurrenceCount) ??
@@ -486,8 +719,7 @@ function normalizeBugDetailPayload(payload: unknown): BugDetail | null {
 		readString(payload.normalized_stacktrace) ??
 		readString(payload.latest_stacktrace);
 	const stacktrace =
-		readString(payload.latest_stacktrace) ??
-		readString(payload.stacktrace);
+		readString(payload.latest_stacktrace) ?? readString(payload.stacktrace);
 
 	if (!id || !title || !stacktrace) {
 		return null;
@@ -499,13 +731,9 @@ function normalizeBugDetailPayload(payload: unknown): BugDetail | null {
 		severity: readString(payload.severity) ?? "—",
 		language: readString(payload.language) ?? "—",
 		firstSeen:
-			readString(payload.first_seen_at) ??
-			readString(payload.firstSeen) ??
-			"—",
+			readString(payload.first_seen_at) ?? readString(payload.firstSeen) ?? "—",
 		lastSeen:
-			readString(payload.last_seen_at) ??
-			readString(payload.lastSeen) ??
-			"—",
+			readString(payload.last_seen_at) ?? readString(payload.lastSeen) ?? "—",
 		occurrenceCount:
 			readNumber(payload.occurrence_count) ??
 			readNumber(payload.occurrenceCount) ??
@@ -517,20 +745,14 @@ function normalizeBugDetailPayload(payload: unknown): BugDetail | null {
 			readString(payload.normalizedStacktrace) ??
 			"",
 		hash:
-			readString(payload.stacktrace_hash) ??
-			readString(payload.hash) ??
-			"—",
+			readString(payload.stacktrace_hash) ?? readString(payload.hash) ?? "—",
 		account:
-			readString(payload.account_name) ??
-			readString(payload.account) ??
-			"—",
-		agent:
-			readString(payload.agent_name) ??
-			readString(payload.agent) ??
-			"—",
+			readString(payload.account_name) ?? readString(payload.account) ?? "—",
+		agent: readString(payload.agent_name) ?? readString(payload.agent) ?? "—",
 		occurrences: readArray(payload.occurrences, normalizeOccurrence) ?? [],
 		tickets: readArray(payload.tickets, normalizeTicket) ?? [],
-		notifications: readArray(payload.notifications, normalizeNotification) ?? [],
+		notifications:
+			readArray(payload.notifications, normalizeNotification) ?? [],
 		notificationEvents:
 			readArray(
 				payload.notification_events ?? payload.notificationEvents,
@@ -577,20 +799,13 @@ function normalizeTicket(value: unknown): BugTicket | null {
 	return {
 		id,
 		provider,
-		remoteId:
-			readString(value.remote_id) ??
-			readString(value.remoteId) ??
-			"—",
+		remoteId: readString(value.remote_id) ?? readString(value.remoteId) ?? "—",
 		remoteUrl:
-			readString(value.remote_url) ??
-			readString(value.remoteUrl) ??
-			"#",
+			readString(value.remote_url) ?? readString(value.remoteUrl) ?? "#",
 		priority: readString(value.priority) ?? "—",
 		status: readString(value.status) ?? "—",
 		createdAt:
-			readString(value.created_at) ??
-			readString(value.createdAt) ??
-			"—",
+			readString(value.created_at) ?? readString(value.createdAt) ?? "—",
 	};
 }
 
@@ -610,10 +825,7 @@ function normalizeNotification(value: unknown): BugNotification | null {
 		id,
 		provider,
 		message: readString(value.message) ?? "—",
-		sentAt:
-			readString(value.sent_at) ??
-			readString(value.sentAt) ??
-			"—",
+		sentAt: readString(value.sent_at) ?? readString(value.sentAt) ?? "—",
 	};
 }
 
@@ -638,13 +850,9 @@ function normalizeNotificationEvent(
 		reason: readString(value.reason) ?? "—",
 		severity: readString(value.severity) ?? "—",
 		ticketAction:
-			readString(value.ticket_action) ??
-			readString(value.ticketAction) ??
-			"—",
+			readString(value.ticket_action) ?? readString(value.ticketAction) ?? "—",
 		occurredAt:
-			readString(value.occurred_at) ??
-			readString(value.occurredAt) ??
-			"—",
+			readString(value.occurred_at) ?? readString(value.occurredAt) ?? "—",
 	};
 }
 

@@ -1,4 +1,5 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { useOrganization } from "@clerk/react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowLeft,
 	Bell,
@@ -11,7 +12,6 @@ import {
 	Server,
 	Ticket,
 } from "lucide-react";
-import { useOrganization } from "@clerk/react";
 import { startTransition, useEffect, useState } from "react";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -90,7 +90,9 @@ function BugDetailRoute() {
 		return <BugNotFound bugId={bugId} />;
 	}
 
-	return <BugDetailScreen data={screenState.data} source={screenState.source} />;
+	return (
+		<BugDetailScreen data={screenState.data} source={screenState.source} />
+	);
 }
 
 function BugDetailScreen({
@@ -181,9 +183,7 @@ function BugDetailScreen({
 								<Badge variant="outline" className="w-fit">
 									Normalized
 								</Badge>
-								<CardTitle className="text-xl">
-									Normalized stacktrace
-								</CardTitle>
+								<CardTitle className="text-xl">Normalized stacktrace</CardTitle>
 								<CardDescription>
 									Stripped to application frames for deduplication matching.
 									Hash: <code>{data.hash}</code>
@@ -268,15 +268,14 @@ function BugDetailScreen({
 							<Badge variant="outline" className="w-fit">
 								Notifications
 							</Badge>
-							<CardTitle className="text-xl">
-								Notification activity
-							</CardTitle>
+							<CardTitle className="text-xl">Notification activity</CardTitle>
 							<CardDescription>
 								Outbound alerts triggered by this bug and their delivery status.
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							{data.notifications.length > 0 || data.notificationEvents.length > 0 ? (
+							{data.notifications.length > 0 ||
+							data.notificationEvents.length > 0 ? (
 								<div className="space-y-3">
 									{data.notifications.map((ntf, index) => (
 										<div key={ntf.id} className="space-y-3">
@@ -284,7 +283,10 @@ function BugDetailScreen({
 											<NotificationRow notification={ntf} />
 										</div>
 									))}
-									{data.notifications.length > 0 && data.notificationEvents.length > 0 ? <Separator /> : null}
+									{data.notifications.length > 0 &&
+									data.notificationEvents.length > 0 ? (
+										<Separator />
+									) : null}
 									{data.notificationEvents.map((evt, index) => (
 										<div key={evt.id} className="space-y-3">
 											{index > 0 ? <Separator /> : null}
@@ -385,11 +387,7 @@ function TicketRow({ ticket }: { ticket: BugTicket }) {
 	);
 }
 
-function NotificationRow({
-	notification,
-}: {
-	notification: BugNotification;
-}) {
+function NotificationRow({ notification }: { notification: BugNotification }) {
 	return (
 		<div className="rounded-2xl border border-border/70 bg-background/75 p-4">
 			<div className="flex flex-wrap items-center justify-between gap-2">
@@ -398,18 +396,12 @@ function NotificationRow({
 					{formatTimestamp(notification.sentAt)}
 				</span>
 			</div>
-			<p className="mt-2 text-sm text-foreground">
-				{notification.message}
-			</p>
+			<p className="mt-2 text-sm text-foreground">{notification.message}</p>
 		</div>
 	);
 }
 
-function NotificationEventRow({
-	event,
-}: {
-	event: BugNotificationEvent;
-}) {
+function NotificationEventRow({ event }: { event: BugNotificationEvent }) {
 	return (
 		<div className="rounded-2xl border border-border/70 bg-background/75 p-4">
 			<div className="flex flex-wrap items-center justify-between gap-2">
@@ -430,9 +422,7 @@ function NotificationEventRow({
 					{formatTimestamp(event.occurredAt)}
 				</span>
 			</div>
-			<p className="mt-2 text-xs text-muted-foreground">
-				{event.reason}
-			</p>
+			<p className="mt-2 text-xs text-muted-foreground">{event.reason}</p>
 		</div>
 	);
 }
@@ -452,9 +442,7 @@ function MetaPill({
 				<Icon className="size-3.5" />
 				<span className="text-xs">{label}</span>
 			</div>
-			<p className="mt-1.5 text-sm font-medium text-white truncate">
-				{value}
-			</p>
+			<p className="mt-1.5 text-sm font-medium text-white truncate">{value}</p>
 		</div>
 	);
 }
@@ -502,7 +490,10 @@ function SeverityBadge({ severity }: { severity: string }) {
 
 	if (lower === "fatal" || lower === "error") {
 		return (
-			<Badge className="border border-rose-200 bg-rose-50 text-rose-700" variant="secondary">
+			<Badge
+				className="border border-rose-200 bg-rose-50 text-rose-700"
+				variant="secondary"
+			>
 				{severity}
 			</Badge>
 		);
@@ -510,7 +501,10 @@ function SeverityBadge({ severity }: { severity: string }) {
 
 	if (lower === "warn") {
 		return (
-			<Badge className="border border-amber-200 bg-amber-50 text-amber-700" variant="secondary">
+			<Badge
+				className="border border-amber-200 bg-amber-50 text-amber-700"
+				variant="secondary"
+			>
 				{severity}
 			</Badge>
 		);
@@ -524,7 +518,10 @@ function PriorityBadge({ priority }: { priority: string }) {
 
 	if (lower === "critical") {
 		return (
-			<Badge className="border border-rose-200 bg-rose-50 text-rose-700" variant="secondary">
+			<Badge
+				className="border border-rose-200 bg-rose-50 text-rose-700"
+				variant="secondary"
+			>
 				{priority}
 			</Badge>
 		);
@@ -532,7 +529,10 @@ function PriorityBadge({ priority }: { priority: string }) {
 
 	if (lower === "high") {
 		return (
-			<Badge className="border border-amber-200 bg-amber-50 text-amber-700" variant="secondary">
+			<Badge
+				className="border border-amber-200 bg-amber-50 text-amber-700"
+				variant="secondary"
+			>
 				{priority}
 			</Badge>
 		);
@@ -546,7 +546,10 @@ function TicketStatusBadge({ status }: { status: string }) {
 
 	if (lower === "resolved" || lower === "closed") {
 		return (
-			<Badge className="border border-emerald-200 bg-emerald-50 text-emerald-700" variant="secondary">
+			<Badge
+				className="border border-emerald-200 bg-emerald-50 text-emerald-700"
+				variant="secondary"
+			>
 				{status}
 			</Badge>
 		);
@@ -554,7 +557,10 @@ function TicketStatusBadge({ status }: { status: string }) {
 
 	if (lower.includes("pending") || lower.includes("sync")) {
 		return (
-			<Badge className="border border-amber-200 bg-amber-50 text-amber-700" variant="secondary">
+			<Badge
+				className="border border-amber-200 bg-amber-50 text-amber-700"
+				variant="secondary"
+			>
 				{status}
 			</Badge>
 		);

@@ -1,13 +1,6 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
-import {
-	ArrowRight,
-	Bug,
-	Clock,
-	Hash,
-	Inbox,
-	RefreshCw,
-} from "lucide-react";
 import { useOrganization } from "@clerk/react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Bug, Clock, Hash, Inbox, RefreshCw } from "lucide-react";
 import { startTransition, useEffect, useState } from "react";
 import { Badge } from "#/components/ui/badge";
 import {
@@ -110,12 +103,7 @@ function BugsRoute() {
 		return <BugListSkeleton />;
 	}
 
-	return (
-		<BugListScreen
-			data={screenState.data}
-			source={screenState.source}
-		/>
-	);
+	return <BugListScreen data={screenState.data} source={screenState.source} />;
 }
 
 function BugListScreen({
@@ -135,11 +123,7 @@ function BugListScreen({
 						</Badge>
 						<Badge
 							variant="secondary"
-							className={
-								source === "live"
-									? ""
-									: "bg-white/10 text-white"
-							}
+							className={source === "live" ? "" : "bg-white/10 text-white"}
 						>
 							{source === "live"
 								? "Live signal"
@@ -168,19 +152,14 @@ function BugListScreen({
 							icon={RefreshCw}
 							label="Total occurrences"
 							value={String(
-								data.bugs.reduce(
-									(sum, bug) => sum + bug.occurrenceCount,
-									0,
-								),
+								data.bugs.reduce((sum, bug) => sum + bug.occurrenceCount, 0),
 							)}
 						/>
 						<SignalPill
 							icon={Clock}
 							label="Critical"
 							value={String(
-								data.bugs.filter(
-									(bug) => bug.tone === "critical",
-								).length,
+								data.bugs.filter((bug) => bug.tone === "critical").length,
 							)}
 						/>
 					</div>
@@ -193,13 +172,10 @@ function BugListScreen({
 						<Badge variant="outline" className="w-fit">
 							Investigation inbox
 						</Badge>
-						<CardTitle className="text-2xl">
-							Recent bug reports
-						</CardTitle>
+						<CardTitle className="text-2xl">Recent bug reports</CardTitle>
 						<CardDescription>
-							Stacktraces grouped by deduplication hash, sorted
-							by last seen. Select a bug to inspect its
-							stacktrace and operational outcomes.
+							Stacktraces grouped by deduplication hash, sorted by last seen.
+							Select a bug to inspect its stacktrace and operational outcomes.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -350,10 +326,7 @@ function BugListSkeleton() {
 				<CardContent>
 					<div className="grid gap-3 sm:grid-cols-3">
 						{[0, 1, 2].map((item) => (
-							<Skeleton
-								key={item}
-								className="h-24 rounded-2xl bg-white/14"
-							/>
+							<Skeleton key={item} className="h-24 rounded-2xl bg-white/14" />
 						))}
 					</div>
 				</CardContent>
