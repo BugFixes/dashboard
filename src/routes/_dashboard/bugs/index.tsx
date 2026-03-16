@@ -1,4 +1,4 @@
-import { useOrganization } from "@clerk/react";
+import { useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Bug, Clock, Hash, Inbox, RefreshCw } from "lucide-react";
 import { startTransition, useEffect, useState } from "react";
@@ -37,7 +37,9 @@ export const Route = createFileRoute("/_dashboard/bugs/")({
 function BugsRoute() {
 	const { mode } = Route.useSearch();
 	const { organization } = useOrganization();
+	const { userId } = useAuth();
 	const clerkOrgId = organization?.id ?? null;
+	const clerkUserId = userId ?? null;
 	const [screenState, setScreenState] = useState<
 		| { kind: "loading" }
 		| { kind: "ready"; data: BugListData; source: BugSource | "empty" }
@@ -72,7 +74,7 @@ function BugsRoute() {
 			setScreenState({ kind: "loading" });
 		});
 
-		void resolveBugList(clerkOrgId, abortController.signal)
+		void resolveBugList(clerkOrgId, clerkUserId, abortController.signal)
 			.then((result) => {
 				startTransition(() => {
 					setScreenState({
@@ -97,7 +99,7 @@ function BugsRoute() {
 			});
 
 		return () => abortController.abort();
-	}, [mode, clerkOrgId]);
+	}, [mode, clerkOrgId, clerkUserId]);
 
 	if (screenState.kind === "loading") {
 		return <BugListSkeleton />;
