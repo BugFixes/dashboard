@@ -10,6 +10,7 @@ describe("dashboard navigation", () => {
 		expect(dashboardNavItems.map((item) => item.to)).toEqual([
 			"/",
 			"/accounts",
+			"/members",
 			"/agents",
 			"/bugs",
 			"/tickets",
@@ -22,6 +23,7 @@ describe("dashboard navigation", () => {
 		expect(dashboardNavItems.map((item) => item.routeFile)).toEqual([
 			"src/routes/_dashboard/index.tsx",
 			"src/routes/_dashboard/accounts/index.tsx",
+			"src/routes/_dashboard/members/index.tsx",
 			"src/routes/_dashboard/agents/index.tsx",
 			"src/routes/_dashboard/bugs/index.tsx",
 			"src/routes/_dashboard/tickets/index.tsx",
