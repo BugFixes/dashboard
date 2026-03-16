@@ -7,6 +7,7 @@ import {
 	House,
 	Settings2,
 	Ticket,
+	Users,
 } from "lucide-react";
 
 export type DashboardRoutePath =
@@ -14,6 +15,7 @@ export type DashboardRoutePath =
 	| "/accounts"
 	| "/agents"
 	| "/bugs"
+	| "/members"
 	| "/tickets"
 	| "/notifications"
 	| "/settings";
@@ -49,6 +51,15 @@ export const dashboardNavItems: DashboardNavItem[] = [
 			"Customer accounts, onboarding state, and environment ownership.",
 		icon: Building2,
 		futureChildren: ["/accounts/$accountId"],
+	},
+	{
+		to: "/members",
+		routeFile: "src/routes/_dashboard/members/index.tsx",
+		label: "Members",
+		shortLabel: "Members",
+		description: "Organization member roles, access levels, and role assignment.",
+		icon: Users,
+		futureChildren: [],
 	},
 	{
 		to: "/agents",

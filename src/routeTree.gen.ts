@@ -17,6 +17,7 @@ import { Route as DashboardNotificationsIndexRouteImport } from './routes/_dashb
 import { Route as DashboardBugsIndexRouteImport } from './routes/_dashboard/bugs/index'
 import { Route as DashboardAgentsIndexRouteImport } from './routes/_dashboard/agents/index'
 import { Route as DashboardAccountsIndexRouteImport } from './routes/_dashboard/accounts/index'
+import { Route as DashboardMembersIndexRouteImport } from './routes/_dashboard/members/index'
 import { Route as DashboardBugsBugIdRouteImport } from './routes/_dashboard/bugs/$bugId'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
@@ -59,6 +60,11 @@ const DashboardAccountsIndexRoute = DashboardAccountsIndexRouteImport.update({
   path: '/accounts/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardMembersIndexRoute = DashboardMembersIndexRouteImport.update({
+  id: '/members/',
+  path: '/members/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardBugsBugIdRoute = DashboardBugsBugIdRouteImport.update({
   id: '/bugs/$bugId',
   path: '/bugs/$bugId',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/accounts/': typeof DashboardAccountsIndexRoute
   '/agents/': typeof DashboardAgentsIndexRoute
   '/bugs/': typeof DashboardBugsIndexRoute
+  '/members/': typeof DashboardMembersIndexRoute
   '/notifications/': typeof DashboardNotificationsIndexRoute
   '/settings/': typeof DashboardSettingsIndexRoute
   '/tickets/': typeof DashboardTicketsIndexRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof DashboardAccountsIndexRoute
   '/agents': typeof DashboardAgentsIndexRoute
   '/bugs': typeof DashboardBugsIndexRoute
+  '/members': typeof DashboardMembersIndexRoute
   '/notifications': typeof DashboardNotificationsIndexRoute
   '/settings': typeof DashboardSettingsIndexRoute
   '/tickets': typeof DashboardTicketsIndexRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/_dashboard/accounts/': typeof DashboardAccountsIndexRoute
   '/_dashboard/agents/': typeof DashboardAgentsIndexRoute
   '/_dashboard/bugs/': typeof DashboardBugsIndexRoute
+  '/_dashboard/members/': typeof DashboardMembersIndexRoute
   '/_dashboard/notifications/': typeof DashboardNotificationsIndexRoute
   '/_dashboard/settings/': typeof DashboardSettingsIndexRoute
   '/_dashboard/tickets/': typeof DashboardTicketsIndexRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/accounts/'
     | '/agents/'
     | '/bugs/'
+    | '/members/'
     | '/notifications/'
     | '/settings/'
     | '/tickets/'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/agents'
     | '/bugs'
+    | '/members'
     | '/notifications'
     | '/settings'
     | '/tickets'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/_dashboard/accounts/'
     | '/_dashboard/agents/'
     | '/_dashboard/bugs/'
+    | '/_dashboard/members/'
     | '/_dashboard/notifications/'
     | '/_dashboard/settings/'
     | '/_dashboard/tickets/'
@@ -193,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAccountsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/_dashboard/members/': {
+      id: '/_dashboard/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof DashboardMembersIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/_dashboard/bugs/$bugId': {
       id: '/_dashboard/bugs/$bugId'
       path: '/bugs/$bugId'
@@ -209,6 +228,7 @@ interface DashboardRouteRouteChildren {
   DashboardAccountsIndexRoute: typeof DashboardAccountsIndexRoute
   DashboardAgentsIndexRoute: typeof DashboardAgentsIndexRoute
   DashboardBugsIndexRoute: typeof DashboardBugsIndexRoute
+  DashboardMembersIndexRoute: typeof DashboardMembersIndexRoute
   DashboardNotificationsIndexRoute: typeof DashboardNotificationsIndexRoute
   DashboardSettingsIndexRoute: typeof DashboardSettingsIndexRoute
   DashboardTicketsIndexRoute: typeof DashboardTicketsIndexRoute
@@ -220,6 +240,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardAccountsIndexRoute: DashboardAccountsIndexRoute,
   DashboardAgentsIndexRoute: DashboardAgentsIndexRoute,
   DashboardBugsIndexRoute: DashboardBugsIndexRoute,
+  DashboardMembersIndexRoute: DashboardMembersIndexRoute,
   DashboardNotificationsIndexRoute: DashboardNotificationsIndexRoute,
   DashboardSettingsIndexRoute: DashboardSettingsIndexRoute,
   DashboardTicketsIndexRoute: DashboardTicketsIndexRoute,
