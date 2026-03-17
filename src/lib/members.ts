@@ -1,4 +1,4 @@
-import { error as logError, info } from "bugfixes";
+import { info, error as logError } from "bugfixes";
 import { env } from "#/lib/env";
 
 export type MemberRole = "viewer" | "editor" | "admin";

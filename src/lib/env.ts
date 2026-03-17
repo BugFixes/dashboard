@@ -4,6 +4,13 @@ function readEnvValue(source: EnvSource, key: string): string {
 	return source[key]?.trim() || "";
 }
 
+function readCsvEnvValue(source: EnvSource, key: string): string[] {
+	return readEnvValue(source, key)
+		.split(",")
+		.map((value) => value.trim())
+		.filter(Boolean);
+}
+
 export function resolveEnv(source: EnvSource) {
 	const appUrl =
 		readEnvValue(source, "VITE_APP_URL") || "http://localhost:3001";
@@ -18,6 +25,14 @@ export function resolveEnv(source: EnvSource) {
 	const flagsAgentId = readEnvValue(source, "VITE_FLAGS_AGENT_ID");
 	const bugfixesKey = readEnvValue(source, "VITE_BUGFIXES_KEY");
 	const bugfixesSecret = readEnvValue(source, "VITE_BUGFIXES_SECRET");
+	const deityOrg = readEnvValue(source, "VITE_DEITY_ORG");
+	const internalOrgMatchers = Array.from(
+		new Set([
+			"chewedfeed",
+			deityOrg,
+			...readCsvEnvValue(source, "VITE_INTERNAL_ORGS"),
+		]),
+	).filter(Boolean);
 
 	return {
 		appName: "Bugfixes Dashboard",
@@ -40,6 +55,10 @@ export function resolveEnv(source: EnvSource) {
 		},
 		providers: {
 			clerkConfigured: clerkPublishableKey.length > 0,
+		},
+		access: {
+			deityOrg,
+			internalOrgMatchers,
 		},
 	} as const;
 }

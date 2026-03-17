@@ -9,15 +9,15 @@ function TicketsRoute() {
 	return (
 		<DashboardAreaPlaceholder
 			badge="Tickets"
-			title="Ticket creation and sync now have a dedicated home."
-			description="This screen is reserved for linked issue status, provider mapping, sync failures, and the operator controls that connect bug records to the external ticket system."
+			title="Tickets TODO"
+			description="Build ticket provider mapping, sync status, failure handling, and outbound ticket actions here."
 			primaryAction={{ label: "Back to overview", to: "/" }}
 			secondaryAction={{ label: "Open bugs", to: "/bugs" }}
 			details={[
 				{
 					label: "Sync",
 					title: "Created tickets need visible state",
-					note: "Operators should be able to tell whether a bug already has a ticket, where it lives, and whether the sync is healthy.",
+					note: "Show whether a bug already has a ticket, where it lives, and whether sync is healthy.",
 				},
 				{
 					label: "Escalation",
@@ -27,7 +27,7 @@ function TicketsRoute() {
 				{
 					label: "Failures",
 					title: "Broken ticket delivery is actionable",
-					note: "If provider auth fails or ticket creation is rejected, the operator should see that here instead of digging through logs.",
+					note: "If provider auth fails or ticket creation is rejected, surface it here instead of relying on logs.",
 				},
 			]}
 			checklist={[

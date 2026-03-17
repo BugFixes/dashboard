@@ -1,4 +1,4 @@
-import { error as logError, info } from "bugfixes";
+import { info, error as logError } from "bugfixes";
 import { env } from "#/lib/env";
 
 export type BugTone = "good" | "warn" | "critical" | "neutral";
@@ -83,7 +83,7 @@ export type BugListData = {
 export const snapshotBugList: BugListData = {
 	title: "Bug inbox",
 	summary:
-		"Incoming stacktraces, deduplication clusters, and investigation entrypoints for the operator shift.",
+		"Incoming stacktraces, deduplication clusters, and investigation entrypoints for the current triage flow.",
 	bugs: [
 		{
 			id: "0ecb8ffe-9be6-4f2a-8329-3febc7b824ed",

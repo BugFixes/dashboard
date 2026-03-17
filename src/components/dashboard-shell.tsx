@@ -1,3 +1,4 @@
+import { useOrganization } from "@clerk/react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Menu, PanelLeft, X } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
@@ -7,15 +8,21 @@ import {
 	dashboardNavItems,
 	getActiveDashboardItem,
 } from "#/lib/dashboard-navigation";
+import { filterDashboardNavForOrg } from "#/lib/internal-access";
 import ThemeToggle from "./ThemeToggle";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 
 export default function DashboardShell({ children }: { children: ReactNode }) {
+	const { organization } = useOrganization();
 	const pathname = useLocation({
 		select: (location) => location.pathname,
 	});
 	const activeItem = getActiveDashboardItem(pathname);
+	const visibleNavItems = filterDashboardNavForOrg(
+		dashboardNavItems,
+		organization,
+	);
 	const [mobileNavOpen, setMobileNavOpen] = useState(false);
 	const previousPathnameRef = useRef(pathname);
 
@@ -57,7 +64,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 						<div className="flex items-start justify-between gap-3">
 							<div className="space-y-2">
 								<Badge variant="outline" className="rounded-full px-3 py-1">
-									Operator shell
+									Bugfixes dashboard
 								</Badge>
 								<Link
 									to="/"
@@ -68,8 +75,8 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 										Bugfixes
 									</p>
 									<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-										Operator dashboard for accounts, agents, bugs, tickets,
-										notifications, and admin setup.
+										Customer dashboard for agents, bugs, tickets, notifications,
+										members, and settings.
 									</p>
 								</Link>
 							</div>
@@ -80,7 +87,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 					</div>
 
 					<nav className="space-y-2" aria-label="Primary">
-						{dashboardNavItems.map((item) => {
+						{visibleNavItems.map((item) => {
 							const Icon = item.icon;
 
 							return (
@@ -106,18 +113,6 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 							);
 						})}
 					</nav>
-
-					<div className="rounded-[24px] border border-[var(--line)] bg-[color-mix(in_oklab,var(--surface-strong)_84%,transparent)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
-						<p className="eyebrow">Layout contract</p>
-						<p className="mt-3 mb-0 text-base font-semibold text-[var(--sea-ink)]">
-							Every admin module plugs into the same stable shell.
-						</p>
-						<p className="mt-2 mb-4 text-sm leading-6 text-[var(--sea-ink-soft)]">
-							Navigation, auth controls, and operator context stay fixed while
-							account setup, agent management, and bug investigation workflows
-							fill in underneath.
-						</p>
-					</div>
 				</div>
 			</aside>
 
@@ -138,7 +133,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 								<Menu />
 							</Button>
 							<div className="min-w-0">
-								<p className="eyebrow">Operator workspace</p>
+								<p className="eyebrow">Workspace</p>
 								<h1 className="mt-2 mb-0 truncate font-display text-2xl font-semibold tracking-tight text-[var(--sea-ink)]">
 									{activeItem.label}
 								</h1>
@@ -181,8 +176,8 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 									Bugfixes
 								</p>
 								<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-									Choose an admin area. The shell stays fixed while the domain
-									screens evolve.
+									Choose a section. Build the real workflow inside the stable
+									shell.
 								</p>
 							</div>
 							<Button
@@ -197,7 +192,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 						</div>
 
 						<nav className="space-y-2" aria-label="Mobile primary">
-							{dashboardNavItems.map((item) => {
+							{visibleNavItems.map((item) => {
 								const Icon = item.icon;
 
 								return (

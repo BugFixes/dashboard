@@ -1,4 +1,6 @@
-import { error as logError, info } from "bugfixes";
+import { info, error as logError } from "bugfixes";
+import type { BugListData, BugSummary } from "#/lib/bugs";
+import { resolveBugList, snapshotBugList } from "#/lib/bugs";
 import { env } from "#/lib/env";
 
 export type OverviewTone = "good" | "warn" | "critical" | "neutral";
@@ -57,14 +59,14 @@ export type OverviewData = {
 };
 
 export const snapshotOverview: OverviewData = {
-	title: "Bugfixes operator dashboard",
+	title: "Bugfixes workspace dashboard",
 	summary:
 		"Configure accounts, manage agents, and watch bug intake from one admin surface while the downstream workflows fill in behind it.",
 	shiftLabel: "Admin shift - Sat 14 Mar",
 	snapshotTakenAt: "14:18",
 	metrics: [
 		{
-			label: "New stacktraces today",
+			label: "New bugs appeared today",
 			value: "42",
 			change: "+8 in the last hour",
 			note: "Fresh intake is heaviest around checkout, auth recovery, and mobile session refresh.",
@@ -96,7 +98,7 @@ export const snapshotOverview: OverviewData = {
 		{
 			name: "Needs triage",
 			count: 12,
-			note: "Bug clusters and fresh stacktraces waiting for the first operator pass.",
+			note: "Bug clusters and fresh stacktraces waiting for the first triage pass.",
 			tone: "warn",
 		},
 		{
@@ -215,7 +217,7 @@ export const emptyOverview: OverviewData = {
 	snapshotTakenAt: "Waiting for first event",
 	metrics: [
 		{
-			label: "New stacktraces today",
+			label: "New bugs appeared today",
 			value: "0",
 			change: "No intake yet",
 			note: "Fresh bug events will appear here once the first account starts publishing.",
@@ -250,38 +252,63 @@ export const emptyOverview: OverviewData = {
 };
 
 export async function resolveOverviewData(
+	clerkOrgId?: string | null,
+	clerkUserId?: string | null,
 	signal?: AbortSignal,
 ): Promise<{ data: OverviewData; source: OverviewSource }> {
 	info("fetching overview data");
 	try {
-		const response = await fetch(
-			new URL("/api/dashboard/overview", env.daphneUrl),
-			{
-				headers: {
-					accept: "application/json",
-				},
+		const headers: Record<string, string> = {
+			accept: "application/json",
+		};
+		if (clerkOrgId) {
+			headers["X-Clerk-Org-Id"] = clerkOrgId;
+		}
+		if (clerkUserId) {
+			headers["X-Clerk-User-Id"] = clerkUserId;
+		}
+
+		const [response, bugResult] = await Promise.all([
+			fetch(new URL("/api/dashboard/overview", env.daphneUrl), {
+				headers,
 				signal,
-			},
-		);
+			}),
+			resolveBugList(clerkOrgId, clerkUserId, signal).catch(() => ({
+				data: snapshotBugList,
+				source: "snapshot" as const,
+			})),
+		]);
 
 		if (!response.ok) {
-			return { data: snapshotOverview, source: "snapshot" };
+			return {
+				data: applyNewBugsMetric(snapshotOverview, bugResult.data),
+				source: "snapshot",
+			};
 		}
 
 		const payload = normalizeOverviewPayload(await response.json());
 
 		if (!payload) {
-			return { data: snapshotOverview, source: "snapshot" };
+			return {
+				data: applyNewBugsMetric(snapshotOverview, bugResult.data),
+				source: "snapshot",
+			};
 		}
 
-		return { data: payload, source: "live" };
+		return {
+			data: applyNewBugsMetric(payload, bugResult.data),
+			source: "live",
+		};
 	} catch (err) {
 		if (err instanceof Error && err.name === "AbortError") {
 			throw err;
 		}
 
 		logError("failed to fetch overview data", err);
-		return { data: snapshotOverview, source: "snapshot" };
+		return {
+			data: applyNewBugsMetric(snapshotOverview, snapshotBugList),
+			source: "snapshot",
+		};
 	}
 }
 
@@ -333,6 +360,72 @@ function normalizeMetric(value: unknown): OverviewMetric | null {
 		note,
 		tone: readTone(value.tone),
 	};
+}
+
+export function applyNewBugsMetric(
+	data: OverviewData,
+	bugData: BugListData,
+): OverviewData {
+	const metrics = [...data.metrics];
+	const metric = buildNewBugsMetric(bugData.bugs);
+
+	if (metrics.length === 0) {
+		metrics.push(metric);
+	} else {
+		metrics[0] = metric;
+	}
+
+	return {
+		...data,
+		metrics,
+	};
+}
+
+function buildNewBugsMetric(bugs: BugSummary[]): OverviewMetric {
+	const timestamps = bugs
+		.flatMap((bug) => [parseDate(bug.firstSeen), parseDate(bug.lastSeen)])
+		.filter((value): value is Date => value !== null)
+		.sort((a, b) => b.getTime() - a.getTime());
+	const reference = timestamps[0] ?? new Date();
+	const startOfDay = new Date(reference);
+	startOfDay.setHours(0, 0, 0, 0);
+	const hourAgo = new Date(reference.getTime() - 1000 * 60 * 60);
+
+	const newToday = bugs.filter((bug) => {
+		const firstSeen = parseDate(bug.firstSeen);
+		return (
+			firstSeen !== null && firstSeen >= startOfDay && firstSeen <= reference
+		);
+	});
+	const lastHourCount = bugs.filter((bug) => {
+		const firstSeen = parseDate(bug.firstSeen);
+		return firstSeen !== null && firstSeen > hourAgo && firstSeen <= reference;
+	}).length;
+
+	return {
+		label: "New bugs appeared today",
+		value: String(newToday.length),
+		change:
+			newToday.length === 0
+				? "No new bugs yet"
+				: `+${lastHourCount} in the last hour`,
+		note: "Derived from the bug table using each bug's first-seen timestamp.",
+		tone:
+			newToday.length === 0
+				? "good"
+				: newToday.length >= 8
+					? "warn"
+					: "neutral",
+	};
+}
+
+function parseDate(value: string): Date | null {
+	if (!value || value === "—") {
+		return null;
+	}
+
+	const date = new Date(value);
+	return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function normalizeQueueLane(value: unknown): QueueLane | null {

@@ -259,6 +259,32 @@ pre code {
   border: 1px solid color-mix(in oklab, var(--border) 84%, transparent);
 }
 
+.form-control {
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  background: color-mix(in oklab, var(--surface-strong) 86%, transparent);
+  padding-inline: 0.875rem;
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.form-control:focus {
+  border-color: color-mix(in oklab, var(--ring) 76%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 18%, transparent);
+}
+
+.form-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .dashboard-shell {
   position: relative;
 }

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { normalizeOverviewPayload, snapshotOverview } from "#/lib/overview";
+import {
+	applyNewBugsMetric,
+	normalizeOverviewPayload,
+	snapshotOverview,
+} from "#/lib/overview";
 
 describe("normalizeOverviewPayload", () => {
 	it("falls back to the snapshot copy when top-level fields are missing", () => {
@@ -132,5 +136,63 @@ describe("normalizeOverviewPayload", () => {
 	it("returns null for non-object payloads", () => {
 		expect(normalizeOverviewPayload(null)).toBeNull();
 		expect(normalizeOverviewPayload("invalid")).toBeNull();
+	});
+});
+
+describe("applyNewBugsMetric", () => {
+	it("derives the first overview metric from bug first-seen timestamps", () => {
+		const data = applyNewBugsMetric(snapshotOverview, {
+			title: "Bug inbox",
+			summary: "Live bugs",
+			bugs: [
+				{
+					id: "bug-1",
+					title: "Checkout crash",
+					severity: "error",
+					language: "ts",
+					firstSeen: "2026-03-15T13:40:00Z",
+					lastSeen: "2026-03-15T13:58:00Z",
+					occurrenceCount: 10,
+					ticketStatus: "open",
+					ticketProvider: "jira",
+					notificationStatus: "sent",
+					tone: "critical",
+				},
+				{
+					id: "bug-2",
+					title: "Auth crash",
+					severity: "error",
+					language: "ts",
+					firstSeen: "2026-03-15T12:20:00Z",
+					lastSeen: "2026-03-15T13:55:00Z",
+					occurrenceCount: 4,
+					ticketStatus: "open",
+					ticketProvider: "linear",
+					notificationStatus: "sent",
+					tone: "critical",
+				},
+				{
+					id: "bug-3",
+					title: "Older issue",
+					severity: "warn",
+					language: "go",
+					firstSeen: "2026-03-14T21:00:00Z",
+					lastSeen: "2026-03-15T11:00:00Z",
+					occurrenceCount: 2,
+					ticketStatus: "none",
+					ticketProvider: "—",
+					notificationStatus: "skipped",
+					tone: "warn",
+				},
+			],
+		});
+
+		expect(data.metrics[0]).toEqual({
+			label: "New bugs appeared today",
+			value: "2",
+			change: "+1 in the last hour",
+			note: "Derived from the bug table using each bug's first-seen timestamp.",
+			tone: "neutral",
+		});
 	});
 });

@@ -1,52 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "#/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
-import { Separator } from "#/components/ui/separator";
-import { env } from "#/lib/env";
 
-const envVars = [
+const settingsAreas = [
 	{
-		name: "VITE_APP_URL",
-		required: true,
-		description: "Public dashboard URL used for local links and redirects.",
+		label: "AI settings",
+		title:
+			"Add provider credentials, model selection, and AI behavior controls",
+		note: "Need forms, saved state, and validation from Daphne.",
 	},
 	{
-		name: "VITE_DAPHNE_URL",
-		required: true,
-		description: "Local Daphne origin so both apps can run side by side.",
+		label: "Notification settings",
+		title: "Add channel routing, destinations, and delivery preferences",
+		note: "Need notification settings APIs plus status/error handling.",
 	},
 	{
-		name: "VITE_CLERK_PUBLISHABLE_KEY",
-		required: false,
-		description:
-			"Client key for Clerk UI components and the admin sign-in flow.",
+		label: "Ticketing settings",
+		title: "Add provider auth, project mapping, and sync defaults",
+		note: "Need ticketing settings APIs and connection health states.",
 	},
-	{
-		name: "CLERK_SECRET_KEY",
-		required: false,
-		description: "Enables Clerk request middleware for SSR-aware auth flows.",
-	},
-	{
-		name: "VITE_FLAGS_PROJECT_ID",
-		required: false,
-		description: "flags.gg project identifier for the dashboard environment.",
-	},
-	{
-		name: "VITE_FLAGS_ENVIRONMENT_ID",
-		required: false,
-		description: "flags.gg environment id.",
-	},
-	{
-		name: "VITE_FLAGS_AGENT_ID",
-		required: false,
-		description: "flags.gg agent id used by the React provider.",
-	},
-] as const;
-
-const nextSteps = [
-	"Replace the placeholder routes with real Daphne-backed account, agent, bug, ticket, and notification modules.",
-	"Tighten auth from any signed-in Clerk user to a narrower admin policy once role claims exist.",
-	"Add typed dashboard data fetchers so the overview and detail screens share one contract.",
 ] as const;
 
 export const Route = createFileRoute("/_dashboard/settings/")({
@@ -56,98 +28,68 @@ export const Route = createFileRoute("/_dashboard/settings/")({
 function SettingsPage() {
 	return (
 		<main className="page-wrap space-y-6 px-4 pb-16 pt-10">
-			<Card className="surface panel-border">
-				<CardHeader className="space-y-4">
+			<Card className="hero-panel overflow-hidden border-none text-white">
+				<CardHeader className="space-y-5">
 					<div className="flex flex-wrap items-center gap-2">
-						<Badge variant="outline">Dashboard settings</Badge>
-						<Badge
-							variant={env.providers.clerkConfigured ? "default" : "secondary"}
-						>
-							{env.providers.clerkConfigured
-								? "Clerk auth configured"
-								: "Local auth bypass"}
+						<Badge className="bg-white/14 text-white shadow-none">
+							Settings
 						</Badge>
 					</div>
-					<div className="space-y-3">
-						<CardTitle className="text-3xl font-semibold tracking-tight sm:text-4xl">
-							Boot the dashboard next to Daphne and control admin access.
+					<div className="space-y-4">
+						<CardTitle className="max-w-3xl font-display text-4xl leading-none font-semibold tracking-tight sm:text-5xl">
+							Settings TODO
 						</CardTitle>
-						<p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
-							The dashboard runs on <code>{env.appUrl}</code> by default and
-							assumes Daphne is reachable at <code>{env.daphneUrl}</code>. When
-							Clerk is configured, the admin shell requires sign-in before the
-							main content renders.
+						<p className="max-w-2xl text-base leading-7 text-slate-100/88">
+							Build AI settings, notification settings, and ticketing settings
+							here.
 						</p>
 					</div>
 				</CardHeader>
-				<CardContent className="grid gap-5 lg:grid-cols-2">
-					<div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-						<p className="eyebrow">Local development</p>
-						<pre className="mt-3 overflow-x-auto rounded-xl bg-slate-950/95 p-4 text-sm text-slate-50">
-							<code>{`cp .env.example .env.local
-bun install
-bun run dev`}</code>
-						</pre>
+				<CardContent className="grid gap-3 sm:grid-cols-3">
+					<div className="rounded-2xl border border-white/12 bg-black/16 px-4 py-3">
+						<p className="m-0 text-sm text-slate-100/76">AI providers</p>
+						<p className="mt-3 mb-0 text-2xl font-semibold tracking-tight text-white">
+							TODO
+						</p>
 					</div>
-					<div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-						<p className="eyebrow">What this foundation already does</p>
-						<ul className="mt-3 space-y-3 text-sm text-muted-foreground">
-							<li>
-								Provides a persistent admin shell with mobile and desktop
-								navigation.
-							</li>
-							<li>
-								Shows a recent bug activity overview with live, snapshot, and
-								empty-state modes.
-							</li>
-							<li>
-								Gates the dashboard behind Clerk when auth keys are present.
-							</li>
-							<li>
-								Keeps a local fallback so development is still frictionless
-								before auth is wired.
-							</li>
-						</ul>
+					<div className="rounded-2xl border border-white/12 bg-black/16 px-4 py-3">
+						<p className="m-0 text-sm text-slate-100/76">
+							Notification routing
+						</p>
+						<p className="mt-3 mb-0 text-2xl font-semibold tracking-tight text-white">
+							TODO
+						</p>
+					</div>
+					<div className="rounded-2xl border border-white/12 bg-black/16 px-4 py-3">
+						<p className="m-0 text-sm text-slate-100/76">
+							Ticketing connections
+						</p>
+						<p className="mt-3 mb-0 text-2xl font-semibold tracking-tight text-white">
+							TODO
+						</p>
 					</div>
 				</CardContent>
 			</Card>
 
 			<Card className="surface panel-border">
 				<CardHeader>
-					<CardTitle>Environment contract</CardTitle>
+					<CardTitle>What still needs building</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-4">
-					{envVars.map((variable, index) => (
-						<div key={variable.name} className="space-y-4">
-							{index > 0 ? <Separator /> : null}
-							<div className="flex flex-wrap items-start justify-between gap-3">
-								<div className="space-y-2">
-									<p className="m-0 font-mono text-sm font-medium text-foreground">
-										{variable.name}
-									</p>
-									<p className="m-0 max-w-3xl text-sm text-muted-foreground">
-										{variable.description}
-									</p>
-								</div>
-								<Badge variant={variable.required ? "default" : "secondary"}>
-									{variable.required ? "Required" : "Optional"}
-								</Badge>
-							</div>
+				<CardContent className="grid gap-4 md:grid-cols-3">
+					{settingsAreas.map((area) => (
+						<div
+							key={area.label}
+							className="rounded-2xl border border-border/70 bg-background/72 p-5"
+						>
+							<p className="eyebrow">{area.label}</p>
+							<p className="mt-3 mb-0 text-base font-semibold text-foreground">
+								{area.title}
+							</p>
+							<p className="mt-2 mb-0 text-sm leading-6 text-muted-foreground">
+								{area.note}
+							</p>
 						</div>
 					))}
-				</CardContent>
-			</Card>
-
-			<Card className="surface panel-border">
-				<CardHeader>
-					<CardTitle>Next implementation passes</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<ol className="space-y-3 pl-5 text-sm text-muted-foreground">
-						{nextSteps.map((step) => (
-							<li key={step}>{step}</li>
-						))}
-					</ol>
 				</CardContent>
 			</Card>
 		</main>

@@ -52,7 +52,7 @@ export default function DashboardAreaPlaceholder({
 								variant="secondary"
 								className="bg-white/10 text-white shadow-none"
 							>
-								Foundation module
+								TODO
 							</Badge>
 						</div>
 						<div className="space-y-4">
@@ -91,16 +91,16 @@ export default function DashboardAreaPlaceholder({
 								<CircleDashed className="size-5 text-primary" />
 							</div>
 							<div>
-								<p className="eyebrow">Why this screen exists</p>
+								<p className="eyebrow">Build notes</p>
 								<CardTitle className="mt-2 text-2xl font-semibold tracking-tight">
-									Stable shell before live admin workflows
+									What this section still needs
 								</CardTitle>
 							</div>
 						</div>
 						<CardDescription className="text-sm leading-7 sm:text-base">
-							Each top-level area can ship iteratively without forcing another
-							layout pass. Navigation, spacing, and admin chrome stay fixed
-							while domain modules replace these placeholders.
+							This section is not built yet. Keep the shell stable and replace
+							the placeholder with the real UI once the underlying workflow is
+							clear.
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-3 sm:grid-cols-3">
@@ -129,9 +129,9 @@ export default function DashboardAreaPlaceholder({
 							<Sparkles className="size-5 text-primary" />
 						</div>
 						<div>
-							<p className="eyebrow">Next implementation pass</p>
+							<p className="eyebrow">TODO</p>
 							<CardTitle className="mt-2 text-2xl font-semibold tracking-tight">
-								Replace the placeholder with real operator workflow
+								Open tasks for this section
 							</CardTitle>
 						</div>
 					</div>

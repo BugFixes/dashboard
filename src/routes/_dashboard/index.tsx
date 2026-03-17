@@ -1,3 +1,4 @@
+import { useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	Activity,
@@ -49,6 +50,10 @@ export const Route = createFileRoute("/_dashboard/")({
 
 function OverviewRoute() {
 	const { mode } = Route.useSearch();
+	const { organization } = useOrganization();
+	const { userId } = useAuth();
+	const clerkOrgId = organization?.id ?? null;
+	const clerkUserId = userId ?? null;
 	const [screenState, setScreenState] = useState<
 		| { kind: "loading" }
 		| { kind: "ready"; data: OverviewData; source: OverviewSource | "empty" }
@@ -83,7 +88,7 @@ function OverviewRoute() {
 			setScreenState({ kind: "loading" });
 		});
 
-		void resolveOverviewData(abortController.signal)
+		void resolveOverviewData(clerkOrgId, clerkUserId, abortController.signal)
 			.then((result) => {
 				startTransition(() => {
 					setScreenState({
@@ -108,7 +113,7 @@ function OverviewRoute() {
 			});
 
 		return () => abortController.abort();
-	}, [mode]);
+	}, [mode, clerkOrgId, clerkUserId]);
 
 	if (screenState.kind === "loading") {
 		return <OverviewSkeleton />;
@@ -165,7 +170,7 @@ function OverviewScreen({
 							<div className="grid gap-3 sm:grid-cols-3">
 								<SignalPill
 									icon={Siren}
-									label={data.metrics[0]?.label ?? "New stacktraces"}
+									label={data.metrics[0]?.label ?? "New bugs appeared today"}
 									value={data.metrics[0]?.value ?? "0"}
 								/>
 								<SignalPill
@@ -230,7 +235,8 @@ function OverviewScreen({
 						</Badge>
 						<CardTitle className="text-2xl">Activity feed</CardTitle>
 						<CardDescription>
-							A tight operator log instead of generic dashboard vanity metrics.
+							A focused activity feed instead of generic dashboard vanity
+							metrics.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -266,7 +272,7 @@ function OverviewScreen({
 						<Badge variant="outline" className="w-fit">
 							Workflow posture
 						</Badge>
-						<CardTitle className="text-2xl">Admin workflow lanes</CardTitle>
+						<CardTitle className="text-2xl">Workflow lanes</CardTitle>
 						<CardDescription>
 							The overview keeps bug intake, ticket sync, agent health, and
 							notification pressure visible.
@@ -285,7 +291,7 @@ function OverviewScreen({
 						) : (
 							<EmptyPanel
 								icon={Radar}
-								title="All admin lanes are clear"
+								title="All workflow lanes are clear"
 								description="Workflow totals will appear here once Daphne exposes the underlying dashboard feed or the first event lands."
 							/>
 						)}
@@ -296,11 +302,9 @@ function OverviewScreen({
 					<CardHeader className="space-y-3">
 						<div className="flex items-center gap-2">
 							<Badge variant="outline">Watchlist</Badge>
-							<Badge variant="secondary">Operator follow-up</Badge>
+							<Badge variant="secondary">Needs follow-up</Badge>
 						</div>
-						<CardTitle className="text-2xl">
-							What needs admin attention
-						</CardTitle>
+						<CardTitle className="text-2xl">What needs attention</CardTitle>
 						<CardDescription>
 							Short, action-oriented cards for the accounts, agents, bugs, and
 							notifications most likely to need follow-up next.
@@ -330,7 +334,7 @@ function OverviewScreen({
 						<Badge variant="outline" className="w-fit">
 							Platform notes
 						</Badge>
-						<CardTitle className="text-2xl">Admin context</CardTitle>
+						<CardTitle className="text-2xl">Workspace context</CardTitle>
 						<CardDescription>
 							Compact notes that keep the board useful even when the live feed
 							is still thin.
@@ -350,7 +354,7 @@ function OverviewScreen({
 							<EmptyPanel
 								icon={CircleAlert}
 								title="No platform notes yet"
-								description="Account setup notes, agent posture, and the next admin review time will appear here when the board has context to share."
+								description="Account setup notes, agent posture, and the next review time will appear here when the board has context to share."
 							/>
 						)}
 					</CardContent>
@@ -359,24 +363,24 @@ function OverviewScreen({
 				<Card className="surface panel-border">
 					<CardHeader className="space-y-3">
 						<Badge variant="outline" className="w-fit">
-							Why this page exists
+							Overview states
 						</Badge>
 						<CardTitle className="text-2xl">
-							Useful before every admin module is built
+							Useful before every section is fully built
 						</CardTitle>
 						<CardDescription>
 							This overview is designed to read well in three states: live,
-							fallback snapshot, and quiet admin board.
+							fallback snapshot, and quiet workspace board.
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-4 md:grid-cols-3">
 						<SummaryCard
 							title="Live feed"
-							description="When Daphne serves `/api/dashboard/overview`, the dashboard hydrates directly from live admin and bug activity."
+							description="When Daphne serves `/api/dashboard/overview`, the dashboard hydrates directly from live workspace and bug activity."
 						/>
 						<SummaryCard
 							title="Snapshot fallback"
-							description="If that endpoint is absent, the board stays useful with seeded Bugfixes operator data instead of empty template cards."
+							description="If that endpoint is absent, the board stays useful with seeded Bugfixes workspace data instead of empty template cards."
 						/>
 						<SummaryCard
 							title="Quiet board"

@@ -36,7 +36,7 @@ export const Route = createRootRoute({
 			{
 				name: "description",
 				content:
-					"Operator dashboard for Bugfixes accounts, agents, bug intake, tickets, notifications, and settings.",
+					"Customer dashboard for Bugfixes agents, bug intake, tickets, notifications, members, and settings.",
 			},
 		],
 		links: [

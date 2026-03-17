@@ -6,7 +6,7 @@ import {
 } from "#/lib/dashboard-navigation";
 
 describe("dashboard navigation", () => {
-	it("exposes the CHE-45 admin areas in the primary navigation", () => {
+	it("exposes the CHE-45 dashboard areas in the primary navigation", () => {
 		expect(dashboardNavItems.map((item) => item.to)).toEqual([
 			"/",
 			"/accounts",
@@ -50,7 +50,7 @@ describe("dashboard navigation", () => {
 			{
 				owner: "_dashboard/route",
 				responsibilities: [
-					"Own the persistent operator shell, primary navigation, and admin gate.",
+					"Own the persistent app shell, primary navigation, and auth gate.",
 					"Wrap every dashboard screen so section routes stay focused on page content.",
 				],
 			},
@@ -58,7 +58,7 @@ describe("dashboard navigation", () => {
 				owner: "_dashboard/<section>/index",
 				responsibilities: [
 					"Own section content only and reserve the directory for nested detail routes.",
-					"Keep future child routes colocated with their parent admin area.",
+					"Keep future child routes colocated with their parent section.",
 				],
 			},
 		]);
