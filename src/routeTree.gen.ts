@@ -14,10 +14,11 @@ import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as DashboardTicketsIndexRouteImport } from './routes/_dashboard/tickets/index'
 import { Route as DashboardSettingsIndexRouteImport } from './routes/_dashboard/settings/index'
 import { Route as DashboardNotificationsIndexRouteImport } from './routes/_dashboard/notifications/index'
+import { Route as DashboardMembersIndexRouteImport } from './routes/_dashboard/members/index'
 import { Route as DashboardBugsIndexRouteImport } from './routes/_dashboard/bugs/index'
+import { Route as DashboardApiKeysIndexRouteImport } from './routes/_dashboard/api-keys/index'
 import { Route as DashboardAgentsIndexRouteImport } from './routes/_dashboard/agents/index'
 import { Route as DashboardAccountsIndexRouteImport } from './routes/_dashboard/accounts/index'
-import { Route as DashboardMembersIndexRouteImport } from './routes/_dashboard/members/index'
 import { Route as DashboardBugsBugIdRouteImport } from './routes/_dashboard/bugs/$bugId'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
@@ -45,9 +46,19 @@ const DashboardNotificationsIndexRoute =
     path: '/notifications/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardMembersIndexRoute = DashboardMembersIndexRouteImport.update({
+  id: '/members/',
+  path: '/members/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardBugsIndexRoute = DashboardBugsIndexRouteImport.update({
   id: '/bugs/',
   path: '/bugs/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardApiKeysIndexRoute = DashboardApiKeysIndexRouteImport.update({
+  id: '/api-keys/',
+  path: '/api-keys/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardAgentsIndexRoute = DashboardAgentsIndexRouteImport.update({
@@ -58,11 +69,6 @@ const DashboardAgentsIndexRoute = DashboardAgentsIndexRouteImport.update({
 const DashboardAccountsIndexRoute = DashboardAccountsIndexRouteImport.update({
   id: '/accounts/',
   path: '/accounts/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardMembersIndexRoute = DashboardMembersIndexRouteImport.update({
-  id: '/members/',
-  path: '/members/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardBugsBugIdRoute = DashboardBugsBugIdRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/bugs/$bugId': typeof DashboardBugsBugIdRoute
   '/accounts/': typeof DashboardAccountsIndexRoute
   '/agents/': typeof DashboardAgentsIndexRoute
+  '/api-keys/': typeof DashboardApiKeysIndexRoute
   '/bugs/': typeof DashboardBugsIndexRoute
   '/members/': typeof DashboardMembersIndexRoute
   '/notifications/': typeof DashboardNotificationsIndexRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/bugs/$bugId': typeof DashboardBugsBugIdRoute
   '/accounts': typeof DashboardAccountsIndexRoute
   '/agents': typeof DashboardAgentsIndexRoute
+  '/api-keys': typeof DashboardApiKeysIndexRoute
   '/bugs': typeof DashboardBugsIndexRoute
   '/members': typeof DashboardMembersIndexRoute
   '/notifications': typeof DashboardNotificationsIndexRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/_dashboard/bugs/$bugId': typeof DashboardBugsBugIdRoute
   '/_dashboard/accounts/': typeof DashboardAccountsIndexRoute
   '/_dashboard/agents/': typeof DashboardAgentsIndexRoute
+  '/_dashboard/api-keys/': typeof DashboardApiKeysIndexRoute
   '/_dashboard/bugs/': typeof DashboardBugsIndexRoute
   '/_dashboard/members/': typeof DashboardMembersIndexRoute
   '/_dashboard/notifications/': typeof DashboardNotificationsIndexRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/bugs/$bugId'
     | '/accounts/'
     | '/agents/'
+    | '/api-keys/'
     | '/bugs/'
     | '/members/'
     | '/notifications/'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/bugs/$bugId'
     | '/accounts'
     | '/agents'
+    | '/api-keys'
     | '/bugs'
     | '/members'
     | '/notifications'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/_dashboard/bugs/$bugId'
     | '/_dashboard/accounts/'
     | '/_dashboard/agents/'
+    | '/_dashboard/api-keys/'
     | '/_dashboard/bugs/'
     | '/_dashboard/members/'
     | '/_dashboard/notifications/'
@@ -184,11 +196,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNotificationsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/_dashboard/members/': {
+      id: '/_dashboard/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof DashboardMembersIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/_dashboard/bugs/': {
       id: '/_dashboard/bugs/'
       path: '/bugs'
       fullPath: '/bugs/'
       preLoaderRoute: typeof DashboardBugsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/_dashboard/api-keys/': {
+      id: '/_dashboard/api-keys/'
+      path: '/api-keys'
+      fullPath: '/api-keys/'
+      preLoaderRoute: typeof DashboardApiKeysIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/_dashboard/agents/': {
@@ -203,13 +229,6 @@ declare module '@tanstack/react-router' {
       path: '/accounts'
       fullPath: '/accounts/'
       preLoaderRoute: typeof DashboardAccountsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/_dashboard/members/': {
-      id: '/_dashboard/members/'
-      path: '/members'
-      fullPath: '/members/'
-      preLoaderRoute: typeof DashboardMembersIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/_dashboard/bugs/$bugId': {
@@ -227,6 +246,7 @@ interface DashboardRouteRouteChildren {
   DashboardBugsBugIdRoute: typeof DashboardBugsBugIdRoute
   DashboardAccountsIndexRoute: typeof DashboardAccountsIndexRoute
   DashboardAgentsIndexRoute: typeof DashboardAgentsIndexRoute
+  DashboardApiKeysIndexRoute: typeof DashboardApiKeysIndexRoute
   DashboardBugsIndexRoute: typeof DashboardBugsIndexRoute
   DashboardMembersIndexRoute: typeof DashboardMembersIndexRoute
   DashboardNotificationsIndexRoute: typeof DashboardNotificationsIndexRoute
@@ -239,6 +259,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardBugsBugIdRoute: DashboardBugsBugIdRoute,
   DashboardAccountsIndexRoute: DashboardAccountsIndexRoute,
   DashboardAgentsIndexRoute: DashboardAgentsIndexRoute,
+  DashboardApiKeysIndexRoute: DashboardApiKeysIndexRoute,
   DashboardBugsIndexRoute: DashboardBugsIndexRoute,
   DashboardMembersIndexRoute: DashboardMembersIndexRoute,
   DashboardNotificationsIndexRoute: DashboardNotificationsIndexRoute,

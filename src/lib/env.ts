@@ -4,6 +4,13 @@ function readEnvValue(source: EnvSource, key: string): string {
 	return source[key]?.trim() || "";
 }
 
+function readCsvEnvValue(source: EnvSource, key: string): string[] {
+	return readEnvValue(source, key)
+		.split(",")
+		.map((value) => value.trim())
+		.filter(Boolean);
+}
+
 export function resolveEnv(source: EnvSource) {
 	const appUrl =
 		readEnvValue(source, "VITE_APP_URL") || "http://localhost:3001";
@@ -16,6 +23,16 @@ export function resolveEnv(source: EnvSource) {
 	const flagsProjectId = readEnvValue(source, "VITE_FLAGS_PROJECT_ID");
 	const flagsEnvironmentId = readEnvValue(source, "VITE_FLAGS_ENVIRONMENT_ID");
 	const flagsAgentId = readEnvValue(source, "VITE_FLAGS_AGENT_ID");
+	const bugfixesKey = readEnvValue(source, "VITE_BUGFIXES_KEY");
+	const bugfixesSecret = readEnvValue(source, "VITE_BUGFIXES_SECRET");
+	const deityOrg = readEnvValue(source, "VITE_DEITY_ORG");
+	const internalOrgMatchers = Array.from(
+		new Set([
+			"chewedfeed",
+			deityOrg,
+			...readCsvEnvValue(source, "VITE_INTERNAL_ORGS"),
+		]),
+	).filter(Boolean);
 
 	return {
 		appName: "Bugfixes Dashboard",
@@ -31,8 +48,17 @@ export function resolveEnv(source: EnvSource) {
 				flagsEnvironmentId.length > 0 &&
 				flagsAgentId.length > 0,
 		},
+		bugfixes: {
+			agentKey: bugfixesKey,
+			agentSecret: bugfixesSecret,
+			isConfigured: bugfixesKey.length > 0 && bugfixesSecret.length > 0,
+		},
 		providers: {
 			clerkConfigured: clerkPublishableKey.length > 0,
+		},
+		access: {
+			deityOrg,
+			internalOrgMatchers,
 		},
 	} as const;
 }

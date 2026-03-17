@@ -37,7 +37,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/index.tsx",
 		label: "Overview",
 		shortLabel: "Overview",
-		description: "Recent bug intake, system activity, and admin posture.",
+		description: "Recent bug intake, delivery health, and workspace activity.",
 		icon: House,
 		exact: true,
 		futureChildren: [],
@@ -48,7 +48,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		label: "Accounts",
 		shortLabel: "Accounts",
 		description:
-			"Customer accounts, onboarding state, and environment ownership.",
+			"Internal account operations that may stay reserved for Bugfixes staff.",
 		icon: Building2,
 		futureChildren: ["/accounts/$accountId"],
 	},
@@ -57,8 +57,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/members/index.tsx",
 		label: "Members",
 		shortLabel: "Members",
-		description:
-			"Organization member roles, access levels, and role assignment.",
+		description: "Manage your team’s roles, access levels, and membership.",
 		icon: Users,
 		futureChildren: [],
 	},
@@ -67,7 +66,8 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/agents/index.tsx",
 		label: "Agents",
 		shortLabel: "Agents",
-		description: "Agent creation, key rotation, status, and delivery posture.",
+		description:
+			"Create agent keys, track usage, and inspect ingestion environments.",
 		icon: Bot,
 		futureChildren: ["/agents/$agentId"],
 	},
@@ -85,7 +85,8 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/tickets/index.tsx",
 		label: "Tickets",
 		shortLabel: "Tickets",
-		description: "Linked issue flow, sync status, and escalation history.",
+		description:
+			"Connected ticketing workflows, sync status, and escalation history.",
 		icon: Ticket,
 		futureChildren: ["/tickets/$ticketId"],
 	},
@@ -94,7 +95,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/notifications/index.tsx",
 		label: "Notifications",
 		shortLabel: "Notifications",
-		description: "Outbound alerts, delivery health, and retry pressure.",
+		description: "Notification delivery, channel health, and retry pressure.",
 		icon: BellRing,
 		futureChildren: ["/notifications/$notificationId"],
 	},
@@ -103,10 +104,13 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/settings/index.tsx",
 		label: "Settings",
 		shortLabel: "Settings",
-		description:
-			"Admin auth, local wiring, and dashboard environment contract.",
+		description: "AI, notification, and ticketing settings for your workspace.",
 		icon: Settings2,
-		futureChildren: ["/settings/auth", "/settings/integrations"],
+		futureChildren: [
+			"/settings/ai",
+			"/settings/notifications",
+			"/settings/ticketing",
+		],
 	},
 ];
 
@@ -121,7 +125,7 @@ export const dashboardLayoutResponsibilities = [
 	{
 		owner: "_dashboard/route",
 		responsibilities: [
-			"Own the persistent operator shell, primary navigation, and admin gate.",
+			"Own the persistent app shell, primary navigation, and auth gate.",
 			"Wrap every dashboard screen so section routes stay focused on page content.",
 		],
 	},
@@ -129,7 +133,7 @@ export const dashboardLayoutResponsibilities = [
 		owner: "_dashboard/<section>/index",
 		responsibilities: [
 			"Own section content only and reserve the directory for nested detail routes.",
-			"Keep future child routes colocated with their parent admin area.",
+			"Keep future child routes colocated with their parent section.",
 		],
 	},
 ] as const;

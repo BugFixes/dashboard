@@ -9,20 +9,20 @@ function NotificationsRoute() {
 	return (
 		<DashboardAreaPlaceholder
 			badge="Notifications"
-			title="Outbound alerts can evolve inside the same admin shell."
-			description="Use this area for digest health, channel configuration, retry pressure, and the operator tooling needed to understand which notifications were sent and which ones failed."
+			title="Notifications TODO"
+			description="Build notification delivery, channel configuration, retry status, and event history here."
 			primaryAction={{ label: "Back to overview", to: "/" }}
 			secondaryAction={{ label: "Open tickets", to: "/tickets" }}
 			details={[
 				{
 					label: "Channels",
 					title: "Slack, email, and webhook posture",
-					note: "Operators need a direct view of which channels are configured for each account and whether recent sends succeeded.",
+					note: "Teams need a direct view of which channels are configured for each account and whether recent sends succeeded.",
 				},
 				{
 					label: "Failures",
 					title: "Retries stay visible until resolved",
-					note: "Notification failures should be inspectable without losing the surrounding admin context or jumping to raw logs.",
+					note: "Add enough failure detail here so notification debugging does not require raw logs.",
 				},
 				{
 					label: "Audit",

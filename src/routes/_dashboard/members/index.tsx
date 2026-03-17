@@ -212,7 +212,7 @@ function MembersScreen({
 					<CardHeader className="space-y-5">
 						<div className="flex flex-wrap items-center gap-2">
 							<Badge className="bg-white/14 text-white shadow-none">
-								Organization members
+								Members
 							</Badge>
 							<Badge
 								variant="secondary"
@@ -223,11 +223,11 @@ function MembersScreen({
 						</div>
 						<div className="space-y-4">
 							<CardTitle className="max-w-3xl font-display text-3xl leading-none font-semibold tracking-tight sm:text-4xl">
-								Manage team roles
+								Manage your team
 							</CardTitle>
 							<CardDescription className="max-w-2xl text-base leading-7 text-slate-100/88">
-								View and assign roles for every member of this organization.
-								Admins can promote or restrict access at any time.
+								View and assign roles for everyone in your workspace. Admins can
+								invite, promote, or restrict access at any time.
 							</CardDescription>
 						</div>
 					</CardHeader>
@@ -252,7 +252,7 @@ function MembersScreen({
 							<CardDescription>
 								{isAdmin
 									? "Use the role selector to change a member's access level. Downgrading an admin requires confirmation."
-									: "Role assignment is available to admins only."}
+									: "Only workspace admins can change member roles."}
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -282,7 +282,7 @@ function MembersScreen({
 							<EmptyPanel
 								icon={Inbox}
 								title="No members found"
-								description="Organization members will appear here once they are added."
+								description="Workspace members will appear here once they are added."
 							/>
 						</CardContent>
 					</Card>

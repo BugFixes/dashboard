@@ -19,7 +19,7 @@ export default function AdminAccessGate({
 						<CardContent className="flex flex-col gap-3 py-5 md:flex-row md:items-center md:justify-between">
 							<div className="space-y-2">
 								<div className="flex flex-wrap items-center gap-2">
-									<Badge variant="outline">Local admin mode</Badge>
+									<Badge variant="outline">Local development mode</Badge>
 									<Badge variant="secondary">Auth bypassed</Badge>
 								</div>
 								<p className="m-0 text-sm leading-6 text-muted-foreground">
@@ -66,7 +66,7 @@ function AuthenticatedAdminAccess({ children }: { children: React.ReactNode }) {
 					<CardHeader className="space-y-4">
 						<div className="flex flex-wrap items-center gap-2">
 							<Badge className="bg-white/14 text-white shadow-none">
-								Admin access
+								Sign in required
 							</Badge>
 							<Badge
 								variant="secondary"
@@ -76,7 +76,7 @@ function AuthenticatedAdminAccess({ children }: { children: React.ReactNode }) {
 							</Badge>
 						</div>
 						<CardTitle className="max-w-3xl font-display text-4xl leading-none font-semibold tracking-tight sm:text-5xl">
-							Sign in to open the operator dashboard.
+							Sign in to open your Bugfixes dashboard.
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="flex flex-wrap items-center gap-3">
@@ -99,8 +99,8 @@ function AuthenticatedAdminAccess({ children }: { children: React.ReactNode }) {
 				<Card className="surface panel-border">
 					<CardContent className="grid gap-4 py-6 md:grid-cols-3">
 						<AccessNote
-							title="Accounts and agents"
-							description="The first pass trusts any authenticated Clerk session to access admin screens."
+							title="Agents and settings"
+							description="Signed-in workspace members can access the dashboard while section-level permissions continue to tighten."
 						/>
 						<AccessNote
 							title="Bug activity"

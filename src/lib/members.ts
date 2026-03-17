@@ -1,3 +1,4 @@
+import { info, error as logError } from "bugfixes";
 import { env } from "#/lib/env";
 
 export type MemberRole = "viewer" | "editor" | "admin";
@@ -71,6 +72,7 @@ export async function updateMemberRole(
 	role: MemberRole,
 	clerkUserId?: string | null,
 ): Promise<{ ok: boolean; error?: string }> {
+	info("updating member role", targetUserId, role);
 	try {
 		const headers: Record<string, string> = {
 			"Content-Type": "application/json",
@@ -107,9 +109,10 @@ export async function updateMemberRole(
 		}
 
 		return { ok: true };
-	} catch (error) {
-		if (error instanceof Error) {
-			return { ok: false, error: error.message };
+	} catch (err) {
+		logError("failed to update member role", err);
+		if (err instanceof Error) {
+			return { ok: false, error: err.message };
 		}
 		return { ok: false, error: "An unexpected error occurred." };
 	}

@@ -9,6 +9,7 @@ describe("env defaults", () => {
 		expect(env.daphneUrl).toBe("http://localhost:3000");
 		expect(env.providers.clerkConfigured).toBe(false);
 		expect(env.flags.isConfigured).toBe(false);
+		expect(env.access.internalOrgMatchers).toEqual(["chewedfeed"]);
 	});
 
 	it("derives provider configuration flags from populated values", () => {
@@ -21,5 +22,19 @@ describe("env defaults", () => {
 
 		expect(env.providers.clerkConfigured).toBe(true);
 		expect(env.flags.isConfigured).toBe(true);
+	});
+
+	it("includes configured internal org matchers for Bugfixes staff controls", () => {
+		const env = resolveEnv({
+			VITE_DEITY_ORG: "deity-org",
+			VITE_INTERNAL_ORGS: "chewedfeed-staging, chewedfeed-prod",
+		});
+
+		expect(env.access.internalOrgMatchers).toEqual([
+			"chewedfeed",
+			"deity-org",
+			"chewedfeed-staging",
+			"chewedfeed-prod",
+		]);
 	});
 });

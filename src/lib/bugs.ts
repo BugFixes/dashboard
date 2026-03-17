@@ -1,3 +1,4 @@
+import { info, error as logError } from "bugfixes";
 import { env } from "#/lib/env";
 
 export type BugTone = "good" | "warn" | "critical" | "neutral";
@@ -82,7 +83,7 @@ export type BugListData = {
 export const snapshotBugList: BugListData = {
 	title: "Bug inbox",
 	summary:
-		"Incoming stacktraces, deduplication clusters, and investigation entrypoints for the operator shift.",
+		"Incoming stacktraces, deduplication clusters, and investigation entrypoints for the current triage flow.",
 	bugs: [
 		{
 			id: "0ecb8ffe-9be6-4f2a-8329-3febc7b824ed",
@@ -580,6 +581,7 @@ export async function resolveBugList(
 	clerkUserId?: string | null,
 	signal?: AbortSignal,
 ): Promise<{ data: BugListData; source: BugSource }> {
+	info("fetching bug list");
 	try {
 		const headers: Record<string, string> = { accept: "application/json" };
 		if (clerkOrgId) {
@@ -604,11 +606,12 @@ export async function resolveBugList(
 		}
 
 		return { data: payload, source: "live" };
-	} catch (error) {
-		if (error instanceof Error && error.name === "AbortError") {
-			throw error;
+	} catch (err) {
+		if (err instanceof Error && err.name === "AbortError") {
+			throw err;
 		}
 
+		logError("failed to fetch bug list", err);
 		return { data: snapshotBugList, source: "snapshot" };
 	}
 }
@@ -619,6 +622,7 @@ export async function resolveBugDetail(
 	clerkUserId?: string | null,
 	signal?: AbortSignal,
 ): Promise<{ data: BugDetail | null; source: BugSource }> {
+	info("fetching bug detail", bugId);
 	try {
 		const headers: Record<string, string> = { accept: "application/json" };
 		if (clerkOrgId) {
@@ -648,11 +652,12 @@ export async function resolveBugDetail(
 		}
 
 		return { data: payload, source: "live" };
-	} catch (error) {
-		if (error instanceof Error && error.name === "AbortError") {
-			throw error;
+	} catch (err) {
+		if (err instanceof Error && err.name === "AbortError") {
+			throw err;
 		}
 
+		logError("failed to fetch bug detail", err);
 		const snapshot = snapshotBugDetails[bugId] ?? null;
 		return { data: snapshot, source: "snapshot" };
 	}
