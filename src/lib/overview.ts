@@ -1,3 +1,4 @@
+import { error as logError, info } from "bugfixes";
 import { env } from "#/lib/env";
 
 export type OverviewTone = "good" | "warn" | "critical" | "neutral";
@@ -251,6 +252,7 @@ export const emptyOverview: OverviewData = {
 export async function resolveOverviewData(
 	signal?: AbortSignal,
 ): Promise<{ data: OverviewData; source: OverviewSource }> {
+	info("fetching overview data");
 	try {
 		const response = await fetch(
 			new URL("/api/dashboard/overview", env.daphneUrl),
@@ -273,11 +275,12 @@ export async function resolveOverviewData(
 		}
 
 		return { data: payload, source: "live" };
-	} catch (error) {
-		if (error instanceof Error && error.name === "AbortError") {
-			throw error;
+	} catch (err) {
+		if (err instanceof Error && err.name === "AbortError") {
+			throw err;
 		}
 
+		logError("failed to fetch overview data", err);
 		return { data: snapshotOverview, source: "snapshot" };
 	}
 }

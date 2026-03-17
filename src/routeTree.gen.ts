@@ -14,10 +14,10 @@ import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as DashboardTicketsIndexRouteImport } from './routes/_dashboard/tickets/index'
 import { Route as DashboardSettingsIndexRouteImport } from './routes/_dashboard/settings/index'
 import { Route as DashboardNotificationsIndexRouteImport } from './routes/_dashboard/notifications/index'
+import { Route as DashboardMembersIndexRouteImport } from './routes/_dashboard/members/index'
 import { Route as DashboardBugsIndexRouteImport } from './routes/_dashboard/bugs/index'
 import { Route as DashboardAgentsIndexRouteImport } from './routes/_dashboard/agents/index'
 import { Route as DashboardAccountsIndexRouteImport } from './routes/_dashboard/accounts/index'
-import { Route as DashboardMembersIndexRouteImport } from './routes/_dashboard/members/index'
 import { Route as DashboardBugsBugIdRouteImport } from './routes/_dashboard/bugs/$bugId'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
@@ -45,6 +45,11 @@ const DashboardNotificationsIndexRoute =
     path: '/notifications/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardMembersIndexRoute = DashboardMembersIndexRouteImport.update({
+  id: '/members/',
+  path: '/members/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardBugsIndexRoute = DashboardBugsIndexRouteImport.update({
   id: '/bugs/',
   path: '/bugs/',
@@ -58,11 +63,6 @@ const DashboardAgentsIndexRoute = DashboardAgentsIndexRouteImport.update({
 const DashboardAccountsIndexRoute = DashboardAccountsIndexRouteImport.update({
   id: '/accounts/',
   path: '/accounts/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardMembersIndexRoute = DashboardMembersIndexRouteImport.update({
-  id: '/members/',
-  path: '/members/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardBugsBugIdRoute = DashboardBugsBugIdRouteImport.update({
@@ -184,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNotificationsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/_dashboard/members/': {
+      id: '/_dashboard/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof DashboardMembersIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/_dashboard/bugs/': {
       id: '/_dashboard/bugs/'
       path: '/bugs'
@@ -203,13 +210,6 @@ declare module '@tanstack/react-router' {
       path: '/accounts'
       fullPath: '/accounts/'
       preLoaderRoute: typeof DashboardAccountsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/_dashboard/members/': {
-      id: '/_dashboard/members/'
-      path: '/members'
-      fullPath: '/members/'
-      preLoaderRoute: typeof DashboardMembersIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/_dashboard/bugs/$bugId': {
