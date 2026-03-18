@@ -18,7 +18,8 @@ The app is configured to run alongside Daphne, which is expected at `http://loca
 This foundation currently provides:
 
 - a persistent admin shell with desktop and mobile navigation
-- overview, accounts, agents, bugs, tickets, notifications, and settings sections
+- overview, members, agents, bugs, tickets, notifications, settings, and internal accounts sections
+- organization-first onboarding with setup progress, membership entry points, and provider configuration callouts
 - agent structure management for projects, sub-projects, environments, and API keys
 - a recent activity overview with live, snapshot, and empty-state modes
 - a Clerk-backed admin sign-in gate when auth keys are configured
@@ -35,6 +36,7 @@ The dashboard now uses a two-layer route model:
 Current top-level route map:
 
 - `/` overview
+- `/members` members
 - `/accounts` accounts
 - `/agents` agents
 - `/bugs` bugs

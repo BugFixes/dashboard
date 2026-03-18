@@ -11,6 +11,7 @@ import {
 	Siren,
 } from "lucide-react";
 import { startTransition, useEffect, useState } from "react";
+import OrganizationSetupPanel from "#/components/organization-setup-panel";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import {
@@ -180,14 +181,14 @@ function OverviewScreen({
 								/>
 								<SignalPill
 									icon={Clock3}
-									label={data.metrics[3]?.label ?? "Accounts onboarded"}
+									label={data.metrics[3]?.label ?? "Organizations ready"}
 									value={data.metrics[3]?.value ?? "0"}
 								/>
 							</div>
 							<div className="flex flex-wrap items-center gap-3">
 								<Button asChild size="lg" className="rounded-full">
-									<Link to="/bugs">
-										Open bugs
+									<Link to="/settings">
+										Continue setup
 										<ArrowRight />
 									</Link>
 								</Button>
@@ -197,7 +198,7 @@ function OverviewScreen({
 									size="lg"
 									className="rounded-full"
 								>
-									<Link to="/accounts">Open accounts</Link>
+									<Link to="/agents">Open agents</Link>
 								</Button>
 							</div>
 						</div>
@@ -253,11 +254,19 @@ function OverviewScreen({
 							<EmptyPanel
 								icon={Activity}
 								title="No system activity yet"
-								description="Recent account changes, bug events, ticket syncs, and notification activity will appear here once the first workflow event lands."
+								description="Recent organization changes, bug events, ticket syncs, and notification activity will appear here once the first workflow event lands."
 							/>
 						)}
 					</CardContent>
 				</Card>
+			</section>
+
+			<section>
+				<OrganizationSetupPanel
+					title="Organization onboarding"
+					description="Use the real supported paths for organization creation, membership management, agent credentials, and provider setup."
+					compact
+				/>
 			</section>
 
 			<section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -306,8 +315,8 @@ function OverviewScreen({
 						</div>
 						<CardTitle className="text-2xl">What needs attention</CardTitle>
 						<CardDescription>
-							Short, action-oriented cards for the accounts, agents, bugs, and
-							notifications most likely to need follow-up next.
+							Short, action-oriented cards for the organizations, agents, bugs,
+							and notifications most likely to need follow-up next.
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-4 md:grid-cols-3">
@@ -354,7 +363,7 @@ function OverviewScreen({
 							<EmptyPanel
 								icon={CircleAlert}
 								title="No platform notes yet"
-								description="Account setup notes, agent posture, and the next review time will appear here when the board has context to share."
+								description="Organization setup notes, agent posture, and the next review time will appear here when the board has context to share."
 							/>
 						)}
 					</CardContent>
@@ -674,7 +683,7 @@ function getSourceConfig(source: OverviewSource | "empty") {
 			label: "Quiet board",
 			badgeVariant: "outline" as const,
 			description:
-				"No recent admin activity is available yet, but the overview still shows what will populate once accounts, agents, and bug intake begin.",
+				"No recent admin activity is available yet, but the overview still shows what will populate once organizations, agents, and bug intake begin.",
 		};
 	}
 

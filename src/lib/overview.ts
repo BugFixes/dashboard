@@ -61,7 +61,7 @@ export type OverviewData = {
 export const snapshotOverview: OverviewData = {
 	title: "Bugfixes workspace dashboard",
 	summary:
-		"Configure accounts, manage agents, and watch bug intake from one admin surface while the downstream workflows fill in behind it.",
+		"Configure organizations, manage agents, and watch bug intake from one admin surface while the downstream workflows fill in behind it.",
 	shiftLabel: "Admin shift - Sat 14 Mar",
 	snapshotTakenAt: "14:18",
 	metrics: [
@@ -87,10 +87,10 @@ export const snapshotOverview: OverviewData = {
 			tone: "critical",
 		},
 		{
-			label: "Accounts onboarded",
+			label: "Organizations ready",
 			value: "6",
 			change: "1 pending credentials",
-			note: "Most accounts are live, but one tenant still needs provider configuration before agents can publish safely.",
+			note: "Most organizations are live, but one tenant still needs provider configuration before agents can publish safely.",
 			tone: "good",
 		},
 	],
@@ -134,7 +134,7 @@ export const snapshotOverview: OverviewData = {
 			id: "act-2",
 			title: "A new production agent was issued for Acme EU",
 			detail:
-				"Operations created the agent, attached it to the account, and the dashboard recorded the environment mapping for later audits.",
+				"Operations created the agent, attached it to the organization environment, and the dashboard recorded the mapping for later audits.",
 			time: "11m ago",
 			actor: "Admin",
 			tone: "warn",
@@ -143,7 +143,7 @@ export const snapshotOverview: OverviewData = {
 			id: "act-3",
 			title: "Zendesk ticket sync recovered after provider re-auth",
 			detail:
-				"Three queued bugs were pushed into the ticket system once the account credentials were refreshed.",
+				"Three queued bugs were pushed into the ticket system once the organization credentials were refreshed.",
 			time: "23m ago",
 			actor: "Ticket sync",
 			tone: "good",
@@ -186,15 +186,15 @@ export const snapshotOverview: OverviewData = {
 			severity: "P3",
 			owner: "Ava",
 			nextStep:
-				"Re-authorize the provider and re-send the queued account digest once the destination is healthy.",
+				"Re-authorize the provider and re-send the queued organization digest once the destination is healthy.",
 			tone: "good",
 		},
 	],
 	coverage: [
 		{
-			label: "Accounts awaiting setup",
+			label: "Organizations awaiting setup",
 			value: "1 tenant pending credentials",
-			note: "The shell is ready for account configuration work even before the full form flow lands.",
+			note: "The shell is ready for organization configuration work even before every provider form lands.",
 		},
 		{
 			label: "Agent posture",
@@ -204,7 +204,7 @@ export const snapshotOverview: OverviewData = {
 		{
 			label: "Next admin review",
 			value: "17:30 UTC",
-			note: "The digest should cover stalled ticket syncs, notification retries, and any account that is not fully configured.",
+			note: "The digest should cover stalled ticket syncs, notification retries, and any organization that is not fully configured.",
 		},
 	],
 };
@@ -212,7 +212,7 @@ export const snapshotOverview: OverviewData = {
 export const emptyOverview: OverviewData = {
 	title: "Quiet admin board",
 	summary:
-		"No recent bug intake or admin activity has landed yet. The overview stays useful so the first account, agent, or stacktrace event has somewhere intentional to appear.",
+		"No recent bug intake or admin activity has landed yet. The overview stays useful so the first organization, agent, or stacktrace event has somewhere intentional to appear.",
 	shiftLabel: "No active admin events",
 	snapshotTakenAt: "Waiting for first event",
 	metrics: [
@@ -220,7 +220,7 @@ export const emptyOverview: OverviewData = {
 			label: "New bugs appeared today",
 			value: "0",
 			change: "No intake yet",
-			note: "Fresh bug events will appear here once the first account starts publishing.",
+			note: "Fresh bug events will appear here once the first organization starts publishing.",
 			tone: "good",
 		},
 		{
@@ -238,10 +238,10 @@ export const emptyOverview: OverviewData = {
 			tone: "good",
 		},
 		{
-			label: "Accounts onboarded",
+			label: "Organizations ready",
 			value: "0",
-			change: "No accounts yet",
-			note: "Account setup activity will appear here when onboarding starts.",
+			change: "No organizations yet",
+			note: "Organization setup activity will appear here when onboarding starts.",
 			tone: "neutral",
 		},
 	],

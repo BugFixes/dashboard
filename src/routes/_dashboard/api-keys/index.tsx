@@ -1,13 +1,16 @@
 import { useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { format } from "date-fns";
 import {
 	Ban,
 	Boxes,
+	Calendar as CalendarIcon,
 	Copy,
 	FolderTree,
 	Inbox,
 	KeyRound,
 	Layers3,
+	Loader2,
 	Plus,
 	RefreshCw,
 	ShieldCheck,
@@ -34,6 +37,7 @@ import {
 } from "#/components/ui/alert-dialog";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
+import { Calendar } from "#/components/ui/calendar";
 import {
 	Card,
 	CardContent,
@@ -41,6 +45,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "#/components/ui/card";
+import { Input } from "#/components/ui/input";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "#/components/ui/popover";
 import { Separator } from "#/components/ui/separator";
 import { Skeleton } from "#/components/ui/skeleton";
 import {
@@ -109,16 +119,6 @@ type EnvironmentFormState = {
 	name: string;
 };
 
-const initialCreateForm: CreateFormState = {
-	name: "",
-	keyType: "dev",
-	scope: "ingest",
-	environmentKey: "",
-	accountId: "",
-	environment: "",
-	expiresOn: "",
-};
-
 const initialProjectForm: ProjectFormState = {
 	name: "",
 	description: "",
@@ -149,8 +149,9 @@ export function AgentCredentialsPage() {
 			? { kind: "loading" }
 			: { kind: "ready", keys: snapshotApiKeys, source: "snapshot" },
 	);
-	const [formState, setFormState] =
-		useState<CreateFormState>(initialCreateForm);
+	const [formState, setFormState] = useState<CreateFormState>(() =>
+		createInitialFormState(),
+	);
 	const [createdKey, setCreatedKey] = useState<ApiKeyWithSecret | null>(null);
 	const [createError, setCreateError] = useState<string | null>(null);
 	const [revokeError, setRevokeError] = useState<string | null>(null);
@@ -402,7 +403,7 @@ export function AgentCredentialsPage() {
 
 	function resetForm(nextType: ApiKeyType = formState.keyType) {
 		setFormState({
-			...initialCreateForm,
+			...createInitialFormState(),
 			keyType: nextType,
 			scope: "ingest",
 		});
@@ -836,6 +837,8 @@ function ApiKeysScreen({
 	structureCounts,
 	structureMessage,
 	subprojectForm,
+	isCreateModalOpen,
+	onSetCreateModalOpen,
 	pendingRevokeId,
 }: {
 	agentStructure: AgentStructure;
@@ -1470,15 +1473,11 @@ function ApiKeysScreen({
 											: "Daphne caps system keys to 365 days. Earliest expiry is tomorrow."
 									}
 								>
-									<input
-										type="date"
+									<ExpiryDatePicker
 										value={formState.expiresOn}
 										min={minimumExpiryDate}
-										onChange={(event) =>
-											onFormChange("expiresOn", event.target.value)
-										}
+										onChange={(value) => onFormChange("expiresOn", value)}
 										disabled={!canManageLive}
-										className="form-control"
 									/>
 								</FormField>
 							</div>
@@ -1832,15 +1831,11 @@ function ApiKeysScreen({
 							</div>
 
 							<div className="space-y-2">
-								<label className="text-sm font-medium" htmlFor="agent-expiry">
-									Expiration (Optional)
-								</label>
-								<Input
-									id="agent-expiry"
-									type="date"
+								<p className="text-sm font-medium">Expiration (Optional)</p>
+								<ExpiryDatePicker
 									min={minimumExpiryDate}
 									value={formState.expiresOn}
-									onChange={(e) => onFormChange("expiresOn", e.target.value)}
+									onChange={(value) => onFormChange("expiresOn", value)}
 								/>
 							</div>
 
@@ -2418,6 +2413,82 @@ function buildEnvironmentInventoryCounts(
 	return targets;
 }
 
+function ExpiryDatePicker({
+	value,
+	min,
+	onChange,
+	disabled,
+}: {
+	value: string;
+	min: string;
+	onChange: (value: string) => void;
+	disabled?: boolean;
+}) {
+	const selectedDate = value ? parseDateInput(value) : undefined;
+	const minimumDate = parseDateInput(min);
+
+	return (
+		<div className="flex items-center gap-2">
+			<Popover>
+				<PopoverTrigger asChild>
+					<Button
+						type="button"
+						variant="outline"
+						disabled={disabled}
+						data-empty={!selectedDate}
+						className="w-full justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+					>
+						<CalendarIcon />
+						{selectedDate ? (
+							format(selectedDate, "PPP")
+						) : (
+							<span>Pick a date</span>
+						)}
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent align="start" className="w-auto p-0">
+					<Calendar
+						mode="single"
+						selected={selectedDate}
+						defaultMonth={selectedDate ?? minimumDate}
+						onSelect={(date) => onChange(date ? formatDateInput(date) : "")}
+						disabled={(date) =>
+							Number.isNaN(minimumDate.getTime())
+								? false
+								: startOfDay(date) < minimumDate
+						}
+					/>
+				</PopoverContent>
+			</Popover>
+			{selectedDate ? (
+				<Button
+					type="button"
+					variant="ghost"
+					size="sm"
+					disabled={disabled}
+					onClick={() => onChange("")}
+				>
+					Clear
+				</Button>
+			) : null}
+		</div>
+	);
+}
+
+function parseDateInput(value: string): Date {
+	const [year, month, day] = value.split("-").map(Number);
+
+	return new Date(year, (month ?? 1) - 1, day ?? 1);
+}
+
+function formatDateInput(date: Date): string {
+	return format(date, "yyyy-MM-dd");
+}
+
+function startOfDay(date: Date): Date {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
 function isAgentStructure(value: unknown): value is AgentStructure {
 	if (!value || typeof value !== "object") {
 		return false;
@@ -2445,4 +2516,16 @@ function getMinimumExpiryDate(): string {
 	tomorrow.setDate(tomorrow.getDate() + 1);
 
 	return tomorrow.toISOString().slice(0, 10);
+}
+
+function createInitialFormState(): CreateFormState {
+	return {
+		name: "",
+		keyType: "dev",
+		scope: "ingest",
+		environmentKey: "",
+		accountId: "",
+		environment: "",
+		expiresOn: getMinimumExpiryDate(),
+	};
 }
