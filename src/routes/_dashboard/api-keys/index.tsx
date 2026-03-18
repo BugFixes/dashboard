@@ -2,9 +2,12 @@ import { useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	Ban,
+	Boxes,
 	Copy,
+	FolderTree,
 	Inbox,
 	KeyRound,
+	Layers3,
 	Plus,
 	RefreshCw,
 	ShieldCheck,
@@ -41,6 +44,17 @@ import {
 import { Separator } from "#/components/ui/separator";
 import { Skeleton } from "#/components/ui/skeleton";
 import {
+	AGENT_STRUCTURE_STORAGE_KEY,
+	type AgentEnvironmentOption,
+	type AgentStructure,
+	buildAgentEnvironmentOptions,
+	countAgentStructure,
+	createEnvironmentRecord,
+	createProjectRecord,
+	createSubprojectRecord,
+	resolveAgentStructure,
+} from "#/lib/agent-structure";
+import {
 	type ApiKeyRecord,
 	type ApiKeyScope,
 	type ApiKeySource,
@@ -73,11 +87,26 @@ type ApiKeysState =
 	| { kind: "ready"; keys: ApiKeyRecord[]; source: ApiKeySource }
 	| { kind: "error"; message: string };
 
-type SystemTargetOption = {
-	value: string;
-	label: string;
-	accountId: string;
-	environment: string;
+type StructureMessage = {
+	tone: "critical" | "neutral";
+	text: string;
+};
+
+type ProjectFormState = {
+	name: string;
+	description: string;
+};
+
+type SubprojectFormState = {
+	projectId: string;
+	name: string;
+	description: string;
+};
+
+type EnvironmentFormState = {
+	projectId: string;
+	subprojectId: string;
+	name: string;
 };
 
 const initialCreateForm: CreateFormState = {
@@ -88,6 +117,23 @@ const initialCreateForm: CreateFormState = {
 	accountId: "",
 	environment: "",
 	expiresOn: "",
+};
+
+const initialProjectForm: ProjectFormState = {
+	name: "",
+	description: "",
+};
+
+const initialSubprojectForm: SubprojectFormState = {
+	projectId: "",
+	name: "",
+	description: "",
+};
+
+const initialEnvironmentForm: EnvironmentFormState = {
+	projectId: "",
+	subprojectId: "",
+	name: "",
 };
 
 export function AgentCredentialsPage() {
@@ -112,8 +158,87 @@ export function AgentCredentialsPage() {
 	const [pendingRevokeId, setPendingRevokeId] = useState<string | null>(null);
 	const [confirmingKey, setConfirmingKey] = useState<ApiKeyRecord | null>(null);
 	const [copiedValue, setCopiedValue] = useState<string | null>(null);
+	const [persistedStructure, setPersistedStructure] =
+		useState<AgentStructure | null>(null);
+	const [structureLoaded, setStructureLoaded] = useState(false);
+	const [projectForm, setProjectForm] =
+		useState<ProjectFormState>(initialProjectForm);
+	const [subprojectForm, setSubprojectForm] = useState<SubprojectFormState>(
+		initialSubprojectForm,
+	);
+	const [environmentForm, setEnvironmentForm] = useState<EnvironmentFormState>(
+		initialEnvironmentForm,
+	);
+	const [structureMessage, setStructureMessage] =
+		useState<StructureMessage | null>(null);
 
 	const isAdmin = normalizeRole(membership?.role ?? "") === "admin";
+
+	const structureSource: ApiKeySource =
+		env.providers.clerkConfigured && screenState.kind === "ready"
+			? screenState.source
+			: "snapshot";
+	const structureKeys =
+		env.providers.clerkConfigured && screenState.kind === "ready"
+			? screenState.keys
+			: snapshotApiKeys;
+	const agentStructure = useMemo(
+		() =>
+			resolveAgentStructure({
+				keys: structureKeys,
+				source: structureSource,
+				persisted: persistedStructure,
+			}),
+		[persistedStructure, structureKeys, structureSource],
+	);
+	const structureCounts = useMemo(
+		() => countAgentStructure(agentStructure),
+		[agentStructure],
+	);
+	const environmentOptions = useMemo(
+		() => buildAgentEnvironmentOptions(agentStructure),
+		[agentStructure],
+	);
+
+	useEffect(() => {
+		if (typeof window === "undefined") {
+			setStructureLoaded(true);
+			return;
+		}
+
+		try {
+			const stored = window.localStorage.getItem(AGENT_STRUCTURE_STORAGE_KEY);
+			if (stored) {
+				const parsed = JSON.parse(stored) as unknown;
+				if (isAgentStructure(parsed)) {
+					setPersistedStructure(parsed);
+				}
+			}
+		} catch {
+			setStructureMessage({
+				tone: "critical",
+				text: "Stored project structure could not be restored. Starting from the seeded model instead.",
+			});
+		} finally {
+			setStructureLoaded(true);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!structureLoaded || typeof window === "undefined") {
+			return;
+		}
+
+		if (!persistedStructure || isEmptyStructure(persistedStructure)) {
+			window.localStorage.removeItem(AGENT_STRUCTURE_STORAGE_KEY);
+			return;
+		}
+
+		window.localStorage.setItem(
+			AGENT_STRUCTURE_STORAGE_KEY,
+			JSON.stringify(persistedStructure),
+		);
+	}, [persistedStructure, structureLoaded]);
 
 	useEffect(() => {
 		if (!isAdmin && formState.keyType === "system") {
@@ -124,6 +249,85 @@ export function AgentCredentialsPage() {
 			}));
 		}
 	}, [formState.keyType, isAdmin]);
+
+	useEffect(() => {
+		if (agentStructure.projects.length === 0) {
+			if (subprojectForm.projectId) {
+				setSubprojectForm((current) => ({
+					...current,
+					projectId: "",
+				}));
+			}
+			if (environmentForm.projectId || environmentForm.subprojectId) {
+				setEnvironmentForm((current) => ({
+					...current,
+					projectId: "",
+					subprojectId: "",
+				}));
+			}
+			return;
+		}
+
+		if (
+			!subprojectForm.projectId ||
+			!agentStructure.projects.some(
+				(project) => project.id === subprojectForm.projectId,
+			)
+		) {
+			setSubprojectForm((current) => ({
+				...current,
+				projectId: agentStructure.projects[0]?.id ?? "",
+			}));
+		}
+
+		if (
+			!environmentForm.projectId ||
+			!agentStructure.projects.some(
+				(project) => project.id === environmentForm.projectId,
+			)
+		) {
+			setEnvironmentForm((current) => ({
+				...current,
+				projectId: agentStructure.projects[0]?.id ?? "",
+			}));
+		}
+	}, [
+		agentStructure.projects,
+		environmentForm.projectId,
+		environmentForm.subprojectId,
+		subprojectForm.projectId,
+	]);
+
+	useEffect(() => {
+		const availableSubprojects = agentStructure.subprojects.filter(
+			(subproject) => subproject.projectId === environmentForm.projectId,
+		);
+		if (availableSubprojects.length === 0) {
+			if (environmentForm.subprojectId) {
+				setEnvironmentForm((current) => ({
+					...current,
+					subprojectId: "",
+				}));
+			}
+			return;
+		}
+
+		if (
+			!environmentForm.subprojectId ||
+			!availableSubprojects.some(
+				(subproject) => subproject.id === environmentForm.subprojectId,
+			)
+		) {
+			setEnvironmentForm((current) => ({
+				...current,
+				subprojectId: availableSubprojects[0]?.id ?? "",
+			}));
+		}
+	}, [
+		agentStructure.subprojects,
+		environmentForm.projectId,
+		environmentForm.subprojectId,
+	]);
 
 	useEffect(() => {
 		if (!env.providers.clerkConfigured) {
@@ -203,6 +407,165 @@ export function AgentCredentialsPage() {
 		});
 	}
 
+	function updatePersistedStructure(
+		updater: (current: AgentStructure | null) => AgentStructure,
+	) {
+		setPersistedStructure((current) => updater(current));
+	}
+
+	function handleProjectCreate(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		setStructureMessage(null);
+
+		if (!projectForm.name.trim()) {
+			setStructureMessage({
+				tone: "critical",
+				text: "Project name is required.",
+			});
+			return;
+		}
+
+		const normalizedName = projectForm.name.trim().toLowerCase();
+		if (
+			agentStructure.projects.some(
+				(project) => project.name.trim().toLowerCase() === normalizedName,
+			)
+		) {
+			setStructureMessage({
+				tone: "critical",
+				text: "That project already exists.",
+			});
+			return;
+		}
+
+		const project = createProjectRecord(projectForm);
+		updatePersistedStructure((current) => ({
+			projects: [...(current?.projects ?? []), project],
+			subprojects: current?.subprojects ?? [],
+			environments: current?.environments ?? [],
+		}));
+		setProjectForm(initialProjectForm);
+		setSubprojectForm((current) => ({
+			...current,
+			projectId: project.id,
+		}));
+		setEnvironmentForm((current) => ({
+			...current,
+			projectId: project.id,
+			subprojectId: "",
+		}));
+		setStructureMessage({
+			tone: "neutral",
+			text: `Created project ${project.name}.`,
+		});
+	}
+
+	function handleSubprojectCreate(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		setStructureMessage(null);
+
+		if (!subprojectForm.projectId) {
+			setStructureMessage({
+				tone: "critical",
+				text: "Choose a project before creating a sub-project.",
+			});
+			return;
+		}
+
+		if (!subprojectForm.name.trim()) {
+			setStructureMessage({
+				tone: "critical",
+				text: "Sub-project name is required.",
+			});
+			return;
+		}
+
+		const normalizedName = subprojectForm.name.trim().toLowerCase();
+		if (
+			agentStructure.subprojects.some(
+				(subproject) =>
+					subproject.projectId === subprojectForm.projectId &&
+					subproject.name.trim().toLowerCase() === normalizedName,
+			)
+		) {
+			setStructureMessage({
+				tone: "critical",
+				text: "That sub-project already exists in the selected project.",
+			});
+			return;
+		}
+
+		const subproject = createSubprojectRecord(subprojectForm);
+		updatePersistedStructure((current) => ({
+			projects: current?.projects ?? [],
+			subprojects: [...(current?.subprojects ?? []), subproject],
+			environments: current?.environments ?? [],
+		}));
+		setSubprojectForm((current) => ({
+			...initialSubprojectForm,
+			projectId: current.projectId,
+		}));
+		setEnvironmentForm((current) => ({
+			...current,
+			projectId: subproject.projectId,
+			subprojectId: subproject.id,
+		}));
+		setStructureMessage({
+			tone: "neutral",
+			text: `Created sub-project ${subproject.name}.`,
+		});
+	}
+
+	function handleEnvironmentCreate(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		setStructureMessage(null);
+
+		if (!environmentForm.projectId || !environmentForm.subprojectId) {
+			setStructureMessage({
+				tone: "critical",
+				text: "Choose a project and sub-project before creating an environment.",
+			});
+			return;
+		}
+
+		if (!environmentForm.name.trim()) {
+			setStructureMessage({
+				tone: "critical",
+				text: "Environment name is required.",
+			});
+			return;
+		}
+
+		const environment = createEnvironmentRecord(environmentForm);
+		if (
+			agentStructure.environments.some(
+				(item) =>
+					item.subprojectId === environment.subprojectId &&
+					item.slug === environment.slug,
+			)
+		) {
+			setStructureMessage({
+				tone: "critical",
+				text: "That environment slug already exists in the selected sub-project.",
+			});
+			return;
+		}
+
+		updatePersistedStructure((current) => ({
+			projects: current?.projects ?? [],
+			subprojects: current?.subprojects ?? [],
+			environments: [...(current?.environments ?? []), environment],
+		}));
+		setEnvironmentForm((current) => ({
+			...current,
+			name: "",
+		}));
+		setStructureMessage({
+			tone: "neutral",
+			text: `Created environment ${environment.name}. It becomes a key target once Daphne binds it to an account.`,
+		});
+	}
+
 	async function handleCreateSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setCreateError(null);
@@ -229,7 +592,7 @@ export function AgentCredentialsPage() {
 		if (!formState.accountId.trim() || !formState.environment.trim()) {
 			setCreateError(
 				formState.keyType === "system"
-					? "Select an agent first."
+					? "Select an environment target first."
 					: "Finish project and environment setup before creating dev keys.",
 			);
 			return;
@@ -331,22 +694,35 @@ export function AgentCredentialsPage() {
 	if (!env.providers.clerkConfigured) {
 		return (
 			<ApiKeysScreen
+				agentStructure={agentStructure}
 				canManageLive={false}
 				canCreateSystemKeys={true}
 				copyFeedback={copiedValue}
 				createError={null}
 				createdKey={createdKey}
 				currentUserId={null}
+				environmentForm={environmentForm}
+				environmentOptions={environmentOptions}
 				formState={formState}
 				isCreating={false}
 				keys={snapshotApiKeys}
 				onCopy={handleCopy}
 				onCreateSubmit={handleCreateSubmit}
+				onEnvironmentCreate={handleEnvironmentCreate}
+				onEnvironmentFormChange={setEnvironmentForm}
 				onFormChange={updateForm}
+				onProjectCreate={handleProjectCreate}
+				onProjectFormChange={setProjectForm}
 				onRevokeRequest={() => undefined}
+				onSubprojectCreate={handleSubprojectCreate}
+				onSubprojectFormChange={setSubprojectForm}
 				organizationName="Local snapshot"
 				revokeError={null}
+				projectForm={projectForm}
 				source="snapshot"
+				structureCounts={structureCounts}
+				structureMessage={structureMessage}
+				subprojectForm={subprojectForm}
 				pendingRevokeId={null}
 			/>
 		);
@@ -367,22 +743,35 @@ export function AgentCredentialsPage() {
 	return (
 		<>
 			<ApiKeysScreen
+				agentStructure={agentStructure}
 				canManageLive={screenState.source === "live"}
 				canCreateSystemKeys={isAdmin}
 				copyFeedback={copiedValue}
 				createError={createError}
 				createdKey={createdKey}
 				currentUserId={userId}
+				environmentForm={environmentForm}
+				environmentOptions={environmentOptions}
 				formState={formState}
 				isCreating={pendingCreate}
 				keys={screenState.keys}
 				onCopy={handleCopy}
 				onCreateSubmit={handleCreateSubmit}
+				onEnvironmentCreate={handleEnvironmentCreate}
+				onEnvironmentFormChange={setEnvironmentForm}
 				onFormChange={updateForm}
+				onProjectCreate={handleProjectCreate}
+				onProjectFormChange={setProjectForm}
 				onRevokeRequest={setConfirmingKey}
+				onSubprojectCreate={handleSubprojectCreate}
+				onSubprojectFormChange={setSubprojectForm}
 				organizationName={organization.name}
 				revokeError={revokeError}
+				projectForm={projectForm}
 				source={screenState.source}
+				structureCounts={structureCounts}
+				structureMessage={structureMessage}
+				subprojectForm={subprojectForm}
 				pendingRevokeId={pendingRevokeId}
 			/>
 
@@ -415,43 +804,81 @@ export function AgentCredentialsPage() {
 }
 
 function ApiKeysScreen({
+	agentStructure,
 	canManageLive,
 	canCreateSystemKeys,
 	copyFeedback,
 	createError,
 	createdKey,
 	currentUserId,
+	environmentForm,
+	environmentOptions,
 	formState,
 	isCreating,
 	keys,
 	onCopy,
 	onCreateSubmit,
+	onEnvironmentCreate,
+	onEnvironmentFormChange,
 	onFormChange,
+	onProjectCreate,
+	onProjectFormChange,
 	onRevokeRequest,
+	onSubprojectCreate,
+	onSubprojectFormChange,
 	organizationName,
+	projectForm,
 	revokeError,
 	source,
+	structureCounts,
+	structureMessage,
+	subprojectForm,
 	pendingRevokeId,
 }: {
+	agentStructure: AgentStructure;
 	canManageLive: boolean;
 	canCreateSystemKeys: boolean;
 	copyFeedback: string | null;
 	createError: string | null;
 	createdKey: ApiKeyWithSecret | null;
 	currentUserId: string | null;
+	environmentForm: EnvironmentFormState;
+	environmentOptions: AgentEnvironmentOption[];
 	formState: CreateFormState;
 	isCreating: boolean;
 	keys: ApiKeyRecord[];
 	onCopy: (label: string, value: string) => Promise<void>;
 	onCreateSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
+	onEnvironmentCreate: (event: FormEvent<HTMLFormElement>) => void;
+	onEnvironmentFormChange: (
+		updater:
+			| EnvironmentFormState
+			| ((current: EnvironmentFormState) => EnvironmentFormState),
+	) => void;
 	onFormChange: <K extends keyof CreateFormState>(
 		key: K,
 		value: CreateFormState[K],
 	) => void;
+	onProjectCreate: (event: FormEvent<HTMLFormElement>) => void;
+	onProjectFormChange: (
+		updater:
+			| ProjectFormState
+			| ((current: ProjectFormState) => ProjectFormState),
+	) => void;
 	onRevokeRequest: (key: ApiKeyRecord) => void;
+	onSubprojectCreate: (event: FormEvent<HTMLFormElement>) => void;
+	onSubprojectFormChange: (
+		updater:
+			| SubprojectFormState
+			| ((current: SubprojectFormState) => SubprojectFormState),
+	) => void;
 	organizationName: string;
+	projectForm: ProjectFormState;
 	revokeError: string | null;
 	source: ApiKeySource;
+	structureCounts: ReturnType<typeof countAgentStructure>;
+	structureMessage: StructureMessage | null;
+	subprojectForm: SubprojectFormState;
 	pendingRevokeId: string | null;
 }) {
 	const minimumExpiryDate = useMemo(() => getMinimumExpiryDate(), []);
@@ -463,12 +890,23 @@ function ApiKeysScreen({
 		).length;
 		return { total, system, expiringSoon };
 	}, [keys]);
-	const systemTargetOptions = useMemo(
-		() => buildSystemTargetOptions(keys),
+	const canCreateSystemKey =
+		canCreateSystemKeys && environmentOptions.length > 0;
+	const selectedSystemTarget =
+		environmentOptions.find(
+			(option) => option.value === formState.environmentKey,
+		) ?? null;
+	const inventoryCounts = useMemo(
+		() => buildEnvironmentInventoryCounts(keys),
 		[keys],
 	);
-	const canCreateSystemKey =
-		canCreateSystemKeys && systemTargetOptions.length > 0;
+	const filteredSubprojectOptions = useMemo(
+		() =>
+			agentStructure.subprojects.filter(
+				(subproject) => subproject.projectId === environmentForm.projectId,
+			),
+		[agentStructure.subprojects, environmentForm.projectId],
+	);
 
 	useEffect(() => {
 		if (!canCreateSystemKey && formState.keyType === "system") {
@@ -478,7 +916,7 @@ function ApiKeysScreen({
 	}, [canCreateSystemKey, formState.keyType, onFormChange]);
 
 	useEffect(() => {
-		if (systemTargetOptions.length === 0) {
+		if (environmentOptions.length === 0) {
 			if (
 				formState.environmentKey ||
 				formState.accountId ||
@@ -492,21 +930,21 @@ function ApiKeysScreen({
 		}
 
 		const selected =
-			systemTargetOptions.find(
+			environmentOptions.find(
 				(option) => option.value === formState.environmentKey,
-			) ?? systemTargetOptions[0];
+			) ?? environmentOptions[0];
 
 		if (
 			selected.value !== formState.environmentKey ||
 			selected.accountId !== formState.accountId ||
-			selected.environment !== formState.environment
+			selected.environmentSlug !== formState.environment
 		) {
 			onFormChange("environmentKey", selected.value);
 			onFormChange("accountId", selected.accountId);
-			onFormChange("environment", selected.environment);
+			onFormChange("environment", selected.environmentSlug);
 		}
 	}, [
-		systemTargetOptions,
+		environmentOptions,
 		formState.accountId,
 		formState.environment,
 		formState.environmentKey,
@@ -531,20 +969,26 @@ function ApiKeysScreen({
 						</div>
 						<div className="space-y-4">
 							<CardTitle className="max-w-3xl font-display text-4xl leading-none font-semibold tracking-tight sm:text-5xl">
-								Create agent keys and manage ingestion credentials.
+								Model projects, attach environments, and issue agent keys.
 							</CardTitle>
 							<CardDescription className="max-w-2xl text-base leading-7 text-slate-100/88">
-								Issue dev and system keys for your agents, keep environment
-								context attached, and see which credentials are active while the
-								full agent detail APIs catch up.
+								Define your workspace structure first, then reuse those
+								environments when creating personal and shared credentials.
 							</CardDescription>
 						</div>
 					</CardHeader>
 					<CardContent className="space-y-5">
-						<div className="grid gap-3 sm:grid-cols-3">
+						<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+							<MetricPill label="Projects" value={structureCounts.projects} />
+							<MetricPill
+								label="Sub-projects"
+								value={structureCounts.subprojects}
+							/>
+							<MetricPill
+								label="Environments"
+								value={structureCounts.environments}
+							/>
 							<MetricPill label="Agent keys" value={counts.total} />
-							<MetricPill label="Shared keys" value={counts.system} />
-							<MetricPill label="Expiring soon" value={counts.expiringSoon} />
 						</div>
 						<div className="flex flex-wrap items-center gap-3">
 							<Button asChild size="lg" className="rounded-full">
@@ -578,29 +1022,273 @@ function ApiKeysScreen({
 						<CardDescription className="text-sm leading-7 sm:text-base">
 							{source === "live"
 								? canCreateSystemKeys
-									? "You can issue personal dev keys and workspace-wide shared keys."
-									: "You can issue dev keys for yourself. Shared system keys stay restricted to admins."
-								: "Snapshot mode keeps the layout visible without Clerk, but live creation and revocation stay disabled."}
+									? "You can define workspace targets, issue personal dev keys, and create shared system keys."
+									: "You can shape the workspace model and issue dev keys for yourself. Shared system keys stay restricted to admins."
+								: "Snapshot mode keeps the structure and key flow visible without Clerk, but live creation and revocation stay disabled."}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-3">
 						<InfoTile
-							title="Dev keys"
-							description="Attach automatically to the current signed-in member, always use ingest scope, and never require a customer to know their Clerk ID."
+							title="Projects"
+							description="Use projects for the top-level product or customer lane that owns the work."
 						/>
 						<InfoTile
-							title="Shared keys"
-							description="Attach to a selected agent environment and support optional read scope for team-managed services."
+							title="Sub-projects"
+							description="Split projects into deployable surfaces, services, or platform slices before assigning environments."
 						/>
 						<InfoTile
-							title="Current backend gap"
-							description="Daphne still does not expose full project/system/environment APIs, so the environment selector is currently derived from existing key inventory."
+							title="Environments"
+							description="Create named environments here. They become key targets after Daphne binds the backend account."
 						/>
 					</CardContent>
 				</Card>
 			</section>
 
-			<section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+			<section className="grid gap-6 xl:grid-cols-[0.96fr_1.04fr]">
+				<Card className="surface panel-border">
+					<CardHeader className="space-y-3">
+						<div className="flex items-center gap-2">
+							<Badge variant="outline">Workspace structure</Badge>
+							<Badge variant="secondary">
+								{structureCounts.projects} projects
+							</Badge>
+						</div>
+						<CardTitle className="text-2xl font-semibold tracking-tight">
+							Create projects, sub-projects, and environments
+						</CardTitle>
+						<CardDescription>
+							Named environments are created here first. Backend-bound
+							environments appear in the key flow automatically.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-5">
+						<div className="grid gap-3 sm:grid-cols-3">
+							<StructureMetricCard
+								icon={FolderTree}
+								label="Projects"
+								value={structureCounts.projects}
+							/>
+							<StructureMetricCard
+								icon={Layers3}
+								label="Sub-projects"
+								value={structureCounts.subprojects}
+							/>
+							<StructureMetricCard
+								icon={Boxes}
+								label="Environments"
+								value={structureCounts.environments}
+							/>
+						</div>
+
+						{structureMessage ? (
+							<InlineMessage tone={structureMessage.tone}>
+								{structureMessage.text}
+							</InlineMessage>
+						) : null}
+
+						<form className="space-y-4" onSubmit={onProjectCreate}>
+							<div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
+								<FormField
+									label="Project"
+									hint="Top-level product lane or customer space."
+								>
+									<input
+										value={projectForm.name}
+										onChange={(event) =>
+											onProjectFormChange((current) => ({
+												...current,
+												name: event.target.value,
+											}))
+										}
+										className="form-control"
+										placeholder="Mobile apps"
+									/>
+								</FormField>
+								<FormField
+									label="Description"
+									hint="Optional context for operators."
+								>
+									<input
+										value={projectForm.description}
+										onChange={(event) =>
+											onProjectFormChange((current) => ({
+												...current,
+												description: event.target.value,
+											}))
+										}
+										className="form-control"
+										placeholder="Customer-facing mobile surfaces"
+									/>
+								</FormField>
+							</div>
+							<Button type="submit" variant="outline">
+								<Plus />
+								Add project
+							</Button>
+						</form>
+
+						<Separator />
+
+						<form className="space-y-4" onSubmit={onSubprojectCreate}>
+							<div className="grid gap-4 md:grid-cols-[0.75fr_1fr_0.95fr]">
+								<FormField
+									label="Parent project"
+									hint="Sub-projects are nested inside a project."
+								>
+									<select
+										value={subprojectForm.projectId}
+										onChange={(event) =>
+											onSubprojectFormChange((current) => ({
+												...current,
+												projectId: event.target.value,
+											}))
+										}
+										disabled={agentStructure.projects.length === 0}
+										className="form-control"
+									>
+										{agentStructure.projects.length === 0 ? (
+											<option value="">Create a project first</option>
+										) : (
+											agentStructure.projects.map((project) => (
+												<option key={project.id} value={project.id}>
+													{project.name}
+												</option>
+											))
+										)}
+									</select>
+								</FormField>
+								<FormField
+									label="Sub-project"
+									hint="Service, app surface, or team-owned slice."
+								>
+									<input
+										value={subprojectForm.name}
+										onChange={(event) =>
+											onSubprojectFormChange((current) => ({
+												...current,
+												name: event.target.value,
+											}))
+										}
+										className="form-control"
+										placeholder="iOS client"
+									/>
+								</FormField>
+								<FormField
+									label="Description"
+									hint="Optional operator context."
+								>
+									<input
+										value={subprojectForm.description}
+										onChange={(event) =>
+											onSubprojectFormChange((current) => ({
+												...current,
+												description: event.target.value,
+											}))
+										}
+										className="form-control"
+										placeholder="Local builds and release lanes"
+									/>
+								</FormField>
+							</div>
+							<Button type="submit" variant="outline">
+								<Plus />
+								Add sub-project
+							</Button>
+						</form>
+
+						<Separator />
+
+						<form className="space-y-4" onSubmit={onEnvironmentCreate}>
+							<div className="grid gap-4 md:grid-cols-2">
+								<FormField
+									label="Project"
+									hint="Choose where the environment lives."
+								>
+									<select
+										value={environmentForm.projectId}
+										onChange={(event) =>
+											onEnvironmentFormChange((current) => ({
+												...current,
+												projectId: event.target.value,
+												subprojectId: "",
+											}))
+										}
+										disabled={agentStructure.projects.length === 0}
+										className="form-control"
+									>
+										{agentStructure.projects.length === 0 ? (
+											<option value="">Create a project first</option>
+										) : (
+											agentStructure.projects.map((project) => (
+												<option key={project.id} value={project.id}>
+													{project.name}
+												</option>
+											))
+										)}
+									</select>
+								</FormField>
+								<FormField
+									label="Sub-project"
+									hint="Environments belong to one sub-project."
+								>
+									<select
+										value={environmentForm.subprojectId}
+										onChange={(event) =>
+											onEnvironmentFormChange((current) => ({
+												...current,
+												subprojectId: event.target.value,
+											}))
+										}
+										disabled={filteredSubprojectOptions.length === 0}
+										className="form-control"
+									>
+										{filteredSubprojectOptions.length === 0 ? (
+											<option value="">Create a sub-project first</option>
+										) : (
+											filteredSubprojectOptions.map((subproject) => (
+												<option key={subproject.id} value={subproject.id}>
+													{subproject.name}
+												</option>
+											))
+										)}
+									</select>
+								</FormField>
+							</div>
+							<div className="grid gap-4 md:grid-cols-2">
+								<FormField
+									label="Environment"
+									hint="Shown in the key flow and slugified for Daphne."
+								>
+									<input
+										value={environmentForm.name}
+										onChange={(event) =>
+											onEnvironmentFormChange((current) => ({
+												...current,
+												name: event.target.value,
+											}))
+										}
+										className="form-control"
+										placeholder="Production"
+									/>
+								</FormField>
+								<div className="rounded-2xl border border-border/70 bg-background/72 px-4 py-3">
+									<p className="m-0 text-sm font-medium text-foreground">
+										Backend binding
+									</p>
+									<p className="mt-2 mb-0 text-sm leading-6 text-muted-foreground">
+										Account binding is now a backend concern. Users should not
+										type raw IDs here.
+									</p>
+								</div>
+							</div>
+							<Button type="submit">
+								<Plus />
+								Add environment
+							</Button>
+						</form>
+					</CardContent>
+				</Card>
+
 				<Card className="surface panel-border">
 					<CardHeader className="space-y-3">
 						<div className="flex items-center gap-2">
@@ -626,7 +1314,7 @@ function ApiKeysScreen({
 										canCreateSystemKey
 											? "Choose whether this key belongs to you or to a shared workspace environment."
 											: canCreateSystemKeys
-												? "Create an agent first to unlock shared system keys."
+												? "Create an environment first to unlock shared system keys."
 												: "Only admins can create shared system keys."
 									}
 								>
@@ -647,17 +1335,19 @@ function ApiKeysScreen({
 
 								{formState.keyType === "system" ? (
 									<FormField
-										label="Agent"
+										label="Environment target"
 										hint={
-											systemTargetOptions.length > 0
-												? "Choose the agent environment these shared keys belong to."
-												: "No agent environments are available yet. This should come from project setup."
+											environmentOptions.length > 0
+												? "Choose the workspace environment these shared keys belong to."
+												: agentStructure.environments.length > 0
+													? "No backend-bound environments are available yet. Newly created environments appear here after Daphne syncs them."
+													: "Create a project, sub-project, and environment first."
 										}
 									>
 										<select
 											value={formState.environmentKey}
 											onChange={(event) => {
-												const selected = systemTargetOptions.find(
+												const selected = environmentOptions.find(
 													(option) => option.value === event.target.value,
 												);
 												if (!selected) {
@@ -665,17 +1355,17 @@ function ApiKeysScreen({
 												}
 												onFormChange("environmentKey", selected.value);
 												onFormChange("accountId", selected.accountId);
-												onFormChange("environment", selected.environment);
+												onFormChange("environment", selected.environmentSlug);
 											}}
 											disabled={
-												!canManageLive || systemTargetOptions.length === 0
+												!canManageLive || environmentOptions.length === 0
 											}
 											className="form-control"
 										>
-											{systemTargetOptions.length === 0 ? (
-												<option value="">No agents available</option>
+											{environmentOptions.length === 0 ? (
+												<option value="">No environments available</option>
 											) : (
-												systemTargetOptions.map((option) => (
+												environmentOptions.map((option) => (
 													<option key={option.value} value={option.value}>
 														{option.label}
 													</option>
@@ -704,17 +1394,43 @@ function ApiKeysScreen({
 
 								{formState.keyType === "system" ? (
 									<FormField
-										label="Selected environment"
-										hint="The matching backend account is attached automatically."
+										label="Selected target"
+										hint="The matching backend binding is attached automatically."
 									>
 										<input
-											value={formState.environment || "No environment selected"}
+											value={
+												selectedSystemTarget?.label || "No environment selected"
+											}
 											disabled
 											className="form-control"
 										/>
 									</FormField>
 								) : null}
 							</div>
+
+							{formState.keyType === "system" ? (
+								<div className="grid gap-4 md:grid-cols-2">
+									<FormField
+										label="Environment slug"
+										hint="Sent to Daphne as the environment identifier."
+									>
+										<input
+											value={selectedSystemTarget?.environmentSlug || "—"}
+											disabled
+											className="form-control"
+										/>
+									</FormField>
+									<div className="rounded-2xl border border-border/70 bg-background/72 px-4 py-3">
+										<p className="m-0 text-sm font-medium text-foreground">
+											Backend binding
+										</p>
+										<p className="mt-2 mb-0 text-sm leading-6 text-muted-foreground">
+											The bound account is attached automatically when the
+											environment is synced from Daphne.
+										</p>
+									</div>
+								</div>
+							) : null}
 
 							<div className="grid gap-4 md:grid-cols-2">
 								{formState.keyType === "system" ? (
@@ -782,6 +1498,48 @@ function ApiKeysScreen({
 								) : null}
 							</div>
 						</form>
+					</CardContent>
+				</Card>
+			</section>
+
+			<section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+				<Card className="surface panel-border">
+					<CardHeader className="space-y-3">
+						<div className="flex items-center gap-2">
+							<Badge variant="outline">Environment inventory</Badge>
+							<Badge variant="secondary">
+								{structureCounts.environments} targets
+							</Badge>
+						</div>
+						<CardTitle className="text-2xl font-semibold tracking-tight">
+							Current workspace hierarchy
+						</CardTitle>
+						<CardDescription>
+							Projects roll up sub-projects, and each environment can be reused
+							for future shared keys.
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						{agentStructure.projects.length > 0 ? (
+							<div className="space-y-4">
+								{agentStructure.projects.map((project, index) => (
+									<div key={project.id} className="space-y-4">
+										{index > 0 ? <Separator /> : null}
+										<ProjectStructureCard
+											inventoryCounts={inventoryCounts}
+											project={project}
+											structure={agentStructure}
+										/>
+									</div>
+								))}
+							</div>
+						) : (
+							<EmptyPanel
+								icon={FolderTree}
+								title="No structure defined yet"
+								description="Add a project, sub-project, and environment to make system key targets available."
+							/>
+						)}
 					</CardContent>
 				</Card>
 
@@ -987,6 +1745,135 @@ function ApiKeyRow({
 					)}
 				</Button>
 			</div>
+		</div>
+	);
+}
+
+function StructureMetricCard({
+	icon: Icon,
+	label,
+	value,
+}: {
+	icon: typeof FolderTree;
+	label: string;
+	value: number;
+}) {
+	return (
+		<div className="rounded-2xl border border-border/70 bg-background/72 p-4">
+			<div className="flex items-center justify-between gap-3">
+				<p className="m-0 text-sm text-muted-foreground">{label}</p>
+				<Icon className="size-4 text-primary" />
+			</div>
+			<p className="mt-3 mb-0 text-2xl font-semibold tracking-tight text-foreground">
+				{value}
+			</p>
+		</div>
+	);
+}
+
+function ProjectStructureCard({
+	inventoryCounts,
+	project,
+	structure,
+}: {
+	inventoryCounts: Map<string, number>;
+	project: AgentStructure["projects"][number];
+	structure: AgentStructure;
+}) {
+	const subprojects = structure.subprojects.filter(
+		(subproject) => subproject.projectId === project.id,
+	);
+
+	return (
+		<div className="space-y-4 rounded-2xl border border-border/70 bg-background/72 p-5">
+			<div className="space-y-2">
+				<div className="flex flex-wrap items-center gap-2">
+					<Badge variant="outline">Project</Badge>
+					<p className="m-0 text-lg font-semibold tracking-tight text-foreground">
+						{project.name}
+					</p>
+				</div>
+				<p className="m-0 text-sm leading-6 text-muted-foreground">
+					{project.description}
+				</p>
+			</div>
+
+			{subprojects.length > 0 ? (
+				<div className="space-y-3">
+					{subprojects.map((subproject) => {
+						const environments = structure.environments.filter(
+							(environment) => environment.subprojectId === subproject.id,
+						);
+
+						return (
+							<div
+								key={subproject.id}
+								className="rounded-2xl border border-border/70 bg-background/88 p-4"
+							>
+								<div className="flex flex-wrap items-center gap-2">
+									<Badge variant="secondary">Sub-project</Badge>
+									<p className="m-0 text-base font-semibold text-foreground">
+										{subproject.name}
+									</p>
+								</div>
+								<p className="mt-2 mb-0 text-sm leading-6 text-muted-foreground">
+									{subproject.description}
+								</p>
+								<div className="mt-4 grid gap-3 md:grid-cols-2">
+									{environments.length > 0 ? (
+										environments.map((environment) => (
+											<div
+												key={environment.id}
+												className="rounded-2xl border border-border/70 bg-background/72 p-4"
+											>
+												<div className="flex flex-wrap items-center gap-2">
+													<Badge variant="outline">Environment</Badge>
+													<p className="m-0 text-sm font-semibold text-foreground">
+														{environment.name}
+													</p>
+												</div>
+												<div className="mt-3 grid gap-3 sm:grid-cols-2">
+													<DataPoint
+														label="Slug"
+														value={environment.slug}
+														mono
+													/>
+													<DataPoint
+														label="Key status"
+														value={
+															environment.accountId
+																? "Ready for keys"
+																: "Pending Daphne sync"
+														}
+													/>
+													{environment.accountId ? (
+														<DataPoint
+															label="Active keys"
+															value={String(
+																inventoryCounts.get(
+																	`${environment.accountId}::${environment.slug}`,
+																) ?? 0,
+															)}
+														/>
+													) : null}
+												</div>
+											</div>
+										))
+									) : (
+										<div className="rounded-2xl border border-dashed border-border bg-background/72 px-4 py-5 text-sm text-muted-foreground">
+											No environments added yet.
+										</div>
+									)}
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			) : (
+				<div className="rounded-2xl border border-dashed border-border bg-background/72 px-4 py-5 text-sm text-muted-foreground">
+					No sub-projects added yet.
+				</div>
+			)}
 		</div>
 	);
 }
@@ -1290,47 +2177,40 @@ function expiresSoon(expiresAt: string): boolean {
 	return ms > 0 && ms <= 1000 * 60 * 60 * 24 * 14;
 }
 
-function buildSystemTargetOptions(keys: ApiKeyRecord[]): SystemTargetOption[] {
-	const targets = new Map<
-		string,
-		SystemTargetOption & { createdAt: string; preferred: boolean }
-	>();
-
+function buildEnvironmentInventoryCounts(
+	keys: ApiKeyRecord[],
+): Map<string, number> {
+	const targets = new Map<string, number>();
 	for (const key of keys) {
 		if (!key.account_id || !key.environment) {
 			continue;
 		}
-
 		const value = `${key.account_id}::${key.environment}`;
-		const label = key.name.trim()
-			? `${key.name} (${key.environment})`
-			: key.environment;
-		const next = {
-			value,
-			label,
-			accountId: key.account_id,
-			environment: key.environment,
-			createdAt: key.created_at,
-			preferred: key.key_type === "system",
-		};
-		const current = targets.get(value);
-
-		if (
-			!current ||
-			(next.preferred && !current.preferred) ||
-			(next.preferred === current.preferred &&
-				new Date(next.createdAt).getTime() >
-					new Date(current.createdAt).getTime())
-		) {
-			targets.set(value, next);
-		}
+		targets.set(value, (targets.get(value) ?? 0) + 1);
 	}
 
-	return [...targets.values()]
-		.sort((left, right) => left.label.localeCompare(right.label))
-		.map(
-			({ createdAt: _createdAt, preferred: _preferred, ...option }) => option,
-		);
+	return targets;
+}
+
+function isAgentStructure(value: unknown): value is AgentStructure {
+	if (!value || typeof value !== "object") {
+		return false;
+	}
+
+	const candidate = value as Partial<AgentStructure>;
+	return (
+		Array.isArray(candidate.projects) &&
+		Array.isArray(candidate.subprojects) &&
+		Array.isArray(candidate.environments)
+	);
+}
+
+function isEmptyStructure(value: AgentStructure): boolean {
+	return (
+		value.projects.length === 0 &&
+		value.subprojects.length === 0 &&
+		value.environments.length === 0
+	);
 }
 
 function getMinimumExpiryDate(): string {
