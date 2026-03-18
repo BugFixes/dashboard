@@ -19,6 +19,7 @@ This foundation currently provides:
 
 - a persistent admin shell with desktop and mobile navigation
 - overview, accounts, agents, bugs, tickets, notifications, and settings sections
+- agent structure management for projects, sub-projects, environments, and API keys
 - a recent activity overview with live, snapshot, and empty-state modes
 - a Clerk-backed admin sign-in gate when auth keys are configured
 
@@ -92,6 +93,7 @@ To make failed checks block merges, add a branch protection rule or ruleset for 
 - `src/routes/__root.tsx` wires the root document, Clerk provider, flags.gg provider, and global page chrome.
 - `src/routes/_dashboard/route.tsx` mounts the shared operator shell for all dashboard routes.
 - `src/routes/_dashboard/index.tsx` is the dashboard overview with recent bug intake and system activity.
+- `src/routes/_dashboard/agents/index.tsx` now surfaces project, sub-project, environment, and API key management together.
 - `src/routes/_dashboard/settings/index.tsx` documents the environment contract, local bootstrap flow, and auth behavior.
 - `src/components/ui/*` contains the first shadcn primitives added for route implementation.
 

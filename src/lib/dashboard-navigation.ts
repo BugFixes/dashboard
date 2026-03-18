@@ -67,7 +67,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		label: "Agents",
 		shortLabel: "Agents",
 		description:
-			"Create agent keys, track usage, and inspect ingestion environments.",
+			"Model projects and environments, then create and audit agent keys.",
 		icon: Bot,
 		futureChildren: ["/agents/$agentId"],
 	},
