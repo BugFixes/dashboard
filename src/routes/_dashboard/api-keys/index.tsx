@@ -158,6 +158,7 @@ export function AgentCredentialsPage() {
 	const [pendingRevokeId, setPendingRevokeId] = useState<string | null>(null);
 	const [confirmingKey, setConfirmingKey] = useState<ApiKeyRecord | null>(null);
 	const [copiedValue, setCopiedValue] = useState<string | null>(null);
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 	const [persistedStructure, setPersistedStructure] =
 		useState<AgentStructure | null>(null);
 	const [structureLoaded, setStructureLoaded] = useState(false);
@@ -772,6 +773,8 @@ export function AgentCredentialsPage() {
 				structureCounts={structureCounts}
 				structureMessage={structureMessage}
 				subprojectForm={subprojectForm}
+				isCreateModalOpen={isCreateModalOpen}
+				onSetCreateModalOpen={setIsCreateModalOpen}
 				pendingRevokeId={pendingRevokeId}
 			/>
 
@@ -879,6 +882,8 @@ function ApiKeysScreen({
 	structureCounts: ReturnType<typeof countAgentStructure>;
 	structureMessage: StructureMessage | null;
 	subprojectForm: SubprojectFormState;
+	isCreateModalOpen: boolean;
+	onSetCreateModalOpen: (open: boolean) => void;
 	pendingRevokeId: string | null;
 }) {
 	const minimumExpiryDate = useMemo(() => getMinimumExpiryDate(), []);
@@ -991,16 +996,21 @@ function ApiKeysScreen({
 							<MetricPill label="Agent keys" value={counts.total} />
 						</div>
 						<div className="flex flex-wrap items-center gap-3">
-							<Button asChild size="lg" className="rounded-full">
-								<Link to="/members">Open members</Link>
+							<Button
+								size="lg"
+								className="rounded-full"
+								onClick={() => onSetCreateModalOpen(true)}
+							>
+								<Plus />
+								Create agent
 							</Button>
 							<Button
 								asChild
-								variant="secondary"
 								size="lg"
+								variant="secondary"
 								className="rounded-full"
 							>
-								<Link to="/settings">Open settings</Link>
+								<Link to="/members">Open members</Link>
 							</Button>
 						</div>
 					</CardContent>
@@ -1519,7 +1529,7 @@ function ApiKeysScreen({
 							for future shared keys.
 						</CardDescription>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="space-y-4">
 						{agentStructure.projects.length > 0 ? (
 							<div className="space-y-4">
 								{agentStructure.projects.map((project, index) => (
@@ -1534,11 +1544,25 @@ function ApiKeysScreen({
 								))}
 							</div>
 						) : (
-							<EmptyPanel
-								icon={FolderTree}
-								title="No structure defined yet"
-								description="Add a project, sub-project, and environment to make system key targets available."
-							/>
+							<div className="space-y-6">
+								<EmptyPanel
+									icon={FolderTree}
+									title="No structure defined yet"
+									description="Define your projects and environments before creating system agents."
+								/>
+								<div className="rounded-2xl border border-dashed p-6 text-center">
+									<p className="mb-4 text-sm text-muted-foreground leading-6">
+										To provision agents for specific product lines, you first
+										need to model your workspace by adding a{" "}
+										<strong>Project</strong>, then a{" "}
+										<strong>Sub-project</strong>, and finally an{" "}
+										<strong>Environment</strong>.
+									</p>
+									<p className="text-sm font-medium">
+										Start by adding a project in the section above.
+									</p>
+								</div>
+							</div>
 						)}
 					</CardContent>
 				</Card>
@@ -1610,8 +1634,8 @@ function ApiKeysScreen({
 						Current agent key inventory
 					</CardTitle>
 					<CardDescription>
-						Shared keys appear only for admins. Personal dev keys are scoped to
-						the current signed-in member.
+						All active credentials currently authorized to ingest data into your
+						workspace environments.
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
@@ -1642,14 +1666,216 @@ function ApiKeysScreen({
 							))}
 						</div>
 					) : (
-						<EmptyPanel
-							icon={Inbox}
-							title="No active agent keys"
-							description="Issue a dev or shared key to make ingestion credentials available for your agents."
-						/>
+						<div className="space-y-6">
+							<EmptyPanel
+								icon={Inbox}
+								title="No active agent keys"
+								description="Issue a dev or shared key to make ingestion credentials available for your agents."
+							/>
+							<div className="flex justify-center">
+								<Button
+									size="lg"
+									className="rounded-full"
+									onClick={() => onSetCreateModalOpen(true)}
+								>
+									<Plus />
+									Create your first agent
+								</Button>
+							</div>
+						</div>
 					)}
 				</CardContent>
 			</Card>
+
+			<AlertDialog
+				open={isCreateModalOpen}
+				onOpenChange={(open) => {
+					if (!open) {
+						onSetCreateModalOpen(false);
+					}
+				}}
+			>
+				<AlertDialogContent className="max-w-2xl">
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{createdKey ? "Agent Provisioned" : "Provision New Agent"}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{createdKey
+								? "Your agent has been successfully created. Copy the credentials below now."
+								: "Agents use these credentials to securely ingest data into your chosen workspace environments."}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+
+					{createdKey ? (
+						<div className="space-y-6 py-4">
+							<div className="space-y-4 rounded-3xl border border-border/70 bg-muted/30 p-6">
+								<div className="flex flex-wrap items-center gap-2">
+									<KeyTypeBadge keyType={createdKey.key_type} />
+									<ScopeBadge scope={createdKey.scope} />
+									<StatusBadge expiresAt={createdKey.expires_at} />
+								</div>
+								<div>
+									<p className="mb-1 text-base font-semibold text-foreground">
+										{createdKey.name}
+									</p>
+									<p className="m-0 text-sm leading-6 text-muted-foreground">
+										Copy both values below. The secret will never be shown
+										again.
+									</p>
+								</div>
+								<SecretField
+									label="Agent Key"
+									value={createdKey.api_key}
+									copyState={copyFeedback === "latest-key" ? "Copied" : "Copy"}
+									onCopy={() => onCopy("latest-key", createdKey.api_key)}
+								/>
+								<SecretField
+									label="Agent Secret"
+									value={createdKey.api_secret}
+									copyState={
+										copyFeedback === "latest-secret" ? "Copied" : "Copy"
+									}
+									onCopy={() => onCopy("latest-secret", createdKey.api_secret)}
+								/>
+							</div>
+							<AlertDialogFooter>
+								<AlertDialogAction
+									onClick={() => onSetCreateModalOpen(false)}
+									className="rounded-full"
+								>
+									Done
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</div>
+					) : (
+						<form onSubmit={onCreateSubmit} className="space-y-6 py-4">
+							{createError ? (
+								<InlineMessage tone="critical">{createError}</InlineMessage>
+							) : null}
+
+							<div className="grid gap-6 sm:grid-cols-2">
+								<div className="space-y-2">
+									<label className="text-sm font-medium" htmlFor="agent-name">
+										Agent Name
+									</label>
+									<Input
+										id="agent-name"
+										placeholder="e.g. Production Ingest"
+										value={formState.name}
+										onChange={(e) => onFormChange("name", e.target.value)}
+										required
+									/>
+								</div>
+
+								<div className="space-y-2">
+									<label className="text-sm font-medium" htmlFor="agent-type">
+										Agent Type
+									</label>
+									<select
+										id="agent-type"
+										className="form-control"
+										value={formState.keyType}
+										onChange={(e) =>
+											onFormChange(
+												"keyType",
+												e.target.value as CreateFormState["keyType"],
+											)
+										}
+										disabled={!canCreateSystemKeys}
+									>
+										<option value="dev">Personal (Dev)</option>
+										<option value="system">Shared (System)</option>
+									</select>
+									{!canCreateSystemKeys && (
+										<p className="text-xs text-muted-foreground">
+											Shared agents require admin permissions.
+										</p>
+									)}
+								</div>
+							</div>
+
+							<div className="space-y-2">
+								<label className="text-sm font-medium" htmlFor="agent-target">
+									Environment Target
+								</label>
+								<select
+									id="agent-target"
+									className="form-control"
+									value={formState.environmentKey}
+									onChange={(e) =>
+										onFormChange("environmentKey", e.target.value)
+									}
+									disabled={formState.keyType === "dev"}
+								>
+									<option value="">Select target environment...</option>
+									{environmentOptions.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</select>
+								{formState.keyType === "dev" ? (
+									<p className="text-xs text-muted-foreground">
+										Personal agents are bound to your user account
+										automatically.
+									</p>
+								) : environmentOptions.length === 0 ? (
+									<div className="rounded-xl border border-warning/30 bg-warning/10 p-4">
+										<p className="text-sm text-warning-foreground leading-6">
+											No environments found. Please define your workspace
+											structure (Project &gt; Sub-project &gt; Environment)
+											before creating shared agents.
+										</p>
+									</div>
+								) : null}
+							</div>
+
+							<div className="space-y-2">
+								<label className="text-sm font-medium" htmlFor="agent-expiry">
+									Expiration (Optional)
+								</label>
+								<Input
+									id="agent-expiry"
+									type="date"
+									min={minimumExpiryDate}
+									value={formState.expiresOn}
+									onChange={(e) => onFormChange("expiresOn", e.target.value)}
+								/>
+							</div>
+
+							<AlertDialogFooter className="pt-4">
+								<AlertDialogCancel
+									onClick={() => onSetCreateModalOpen(false)}
+									className="rounded-full"
+								>
+									Cancel
+								</AlertDialogCancel>
+								<Button
+									type="submit"
+									disabled={
+										isCreating ||
+										!formState.name ||
+										(formState.keyType === "system" &&
+											!formState.environmentKey) ||
+										!canManageLive
+									}
+									className="rounded-full"
+								>
+									{isCreating ? (
+										<span className="flex items-center gap-2">
+											<Loader2 className="size-4 animate-spin" />
+											Provisioning...
+										</span>
+									) : (
+										"Provision Agent"
+									)}
+								</Button>
+							</AlertDialogFooter>
+						</form>
+					)}
+				</AlertDialogContent>
+			</AlertDialog>
 		</main>
 	);
 }
