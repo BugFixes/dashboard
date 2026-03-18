@@ -37,7 +37,8 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/index.tsx",
 		label: "Overview",
 		shortLabel: "Overview",
-		description: "Recent bug intake, delivery health, and workspace activity.",
+		description:
+			"Organization onboarding, recent bug intake, and workspace activity.",
 		icon: House,
 		exact: true,
 		futureChildren: [],
@@ -48,7 +49,7 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		label: "Accounts",
 		shortLabel: "Accounts",
 		description:
-			"Internal account operations that may stay reserved for Bugfixes staff.",
+			"Internal support tooling that stays outside the customer onboarding flow.",
 		icon: Building2,
 		futureChildren: ["/accounts/$accountId"],
 	},
@@ -104,7 +105,8 @@ export const dashboardNavItems: DashboardNavItem[] = [
 		routeFile: "src/routes/_dashboard/settings/index.tsx",
 		label: "Settings",
 		shortLabel: "Settings",
-		description: "AI, notification, and ticketing settings for your workspace.",
+		description:
+			"Organization setup progress plus AI, notification, and ticketing settings.",
 		icon: Settings2,
 		futureChildren: [
 			"/settings/ai",

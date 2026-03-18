@@ -110,8 +110,8 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 											Bugfixes
 										</p>
 										<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-											Customer dashboard for agents, bugs, tickets,
-											notifications, members, and settings.
+											Organization dashboard for onboarding, agents, bugs,
+											tickets, notifications, members, and settings.
 										</p>
 									</Link>
 								</div>
@@ -257,8 +257,8 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 									Bugfixes
 								</p>
 								<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-									Choose a section. Build the real workflow inside the stable
-									shell.
+									Choose a section. Build the real organization workflow inside
+									the stable shell.
 								</p>
 							</div>
 						</div>

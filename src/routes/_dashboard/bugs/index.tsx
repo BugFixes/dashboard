@@ -197,7 +197,7 @@ function BugListScreen({
 						<EmptyPanel
 							icon={Inbox}
 							title="No bugs received yet"
-							description="Stacktraces will appear here once the first agent starts publishing. Configure an account and agent from the overview to begin intake."
+							description="Stacktraces will appear here once the first agent starts publishing. Configure an organization and agent from the onboarding flow to begin intake."
 						/>
 					</CardContent>
 				</Card>
