@@ -1,7 +1,8 @@
-import { useAuth, useOrganization } from "@clerk/react";
+import { OrganizationProfile, useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Inbox, Users } from "lucide-react";
+import { Inbox, UserPlus, Users, X } from "lucide-react";
 import { startTransition, useState } from "react";
+import { Button } from "#/components/ui/button";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -39,7 +40,12 @@ export const Route = createFileRoute("/_dashboard/members/")({
 type PendingDowngrade = { member: OrgMember; newRole: MemberRole };
 
 function MembersRoute() {
-	const { organization, memberships, membership } = useOrganization({
+	const {
+		organization,
+		memberships,
+		membership,
+		isLoaded: isOrganizationLoaded,
+	} = useOrganization({
 		memberships: { pageSize: 50, keepPreviousData: true },
 	});
 	const { userId } = useAuth();
@@ -52,7 +58,9 @@ function MembersRoute() {
 	} | null>(null);
 	const [pendingDowngrade, setPendingDowngrade] =
 		useState<PendingDowngrade | null>(null);
+	const [showInviteModal, setShowInviteModal] = useState(false);
 
+	const isOrgLoaded = isOrganizationLoaded;
 	const clerkOrgId = organization?.id ?? null;
 	const clerkUserId = userId ?? null;
 
@@ -139,7 +147,7 @@ function MembersRoute() {
 	}
 
 	// Loading state
-	if (!memberships || memberships.isLoading) {
+	if (!isOrgLoaded || (memberships && memberships.isLoading)) {
 		return <MembersListSkeleton />;
 	}
 
@@ -176,6 +184,9 @@ function MembersRoute() {
 			onRoleChange={handleRoleChange}
 			onConfirmDowngrade={handleConfirmDowngrade}
 			onCancelDowngrade={() => setPendingDowngrade(null)}
+			showInviteModal={showInviteModal}
+			onInviteClick={() => setShowInviteModal(true)}
+			onCloseInvite={() => setShowInviteModal(false)}
 		/>
 	);
 }
@@ -190,6 +201,9 @@ function MembersScreen({
 	onRoleChange,
 	onConfirmDowngrade,
 	onCancelDowngrade,
+	showInviteModal,
+	onInviteClick,
+	onCloseInvite,
 }: {
 	members: OrgMember[];
 	isAdmin: boolean;
@@ -200,6 +214,9 @@ function MembersScreen({
 	onRoleChange: (member: OrgMember, newRole: MemberRole) => void;
 	onConfirmDowngrade: () => void;
 	onCancelDowngrade: () => void;
+	showInviteModal: boolean;
+	onInviteClick: () => void;
+	onCloseInvite: () => void;
 }) {
 	const adminCount = members.filter((m) => m.role === "admin").length;
 	const editorCount = members.filter((m) => m.role === "editor").length;
@@ -230,6 +247,18 @@ function MembersScreen({
 								invite, promote, or restrict access at any time.
 							</CardDescription>
 						</div>
+
+						{isAdmin && source === "live" && (
+							<div className="pt-2">
+								<Button
+									onClick={onInviteClick}
+									className="group bg-zinc-900 font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+								>
+									<UserPlus className="mr-2 size-4 transition-transform group-hover:scale-110" />
+									Invite member
+								</Button>
+							</div>
+						)}
 					</CardHeader>
 					<CardContent>
 						<div className="grid gap-3 sm:grid-cols-3">
@@ -271,6 +300,18 @@ function MembersScreen({
 											}
 											onRoleChange={onRoleChange}
 										/>
+										{isAdmin && source === "live" && (
+											<div className="flex justify-end pt-1">
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-8 text-xs text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/30"
+													onClick={onInviteClick}
+												>
+													Manage access
+												</Button>
+											</div>
+										)}
 									</div>
 								))}
 							</div>
@@ -284,6 +325,11 @@ function MembersScreen({
 								title="No members found"
 								description="Workspace members will appear here once they are added."
 							/>
+							{isAdmin && source === "live" && (
+								<div className="mt-6 flex justify-center">
+									<Button onClick={onInviteClick}>Invite your first member</Button>
+								</div>
+							)}
 						</CardContent>
 					</Card>
 				)}
@@ -313,6 +359,37 @@ function MembersScreen({
 							Confirm downgrade
 						</AlertDialogAction>
 					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog open={showInviteModal}>
+				<AlertDialogContent className="max-w-[calc(100vw-2rem)] rounded-2xl p-0 sm:max-w-[512px]">
+					<div className="flex items-center justify-between border-b px-6 py-4">
+						<h3 className="text-lg font-semibold">Workspace management</h3>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onCloseInvite}
+							className="size-8 rounded-full"
+						>
+							<X className="size-4" />
+						</Button>
+					</div>
+					<div className="flex max-h-[70vh] items-start justify-center overflow-y-auto px-1 py-6 sm:px-4">
+						<OrganizationProfile
+							appearance={{
+								elements: {
+									rootBox: "w-full",
+									card: "shadow-none border-none p-0 w-full bg-transparent",
+									navbar: "hidden",
+									header: "hidden",
+									pageScrollBox: "p-0",
+									content: "p-0 w-full",
+									organizationProfile: "w-full",
+								},
+							}}
+						/>
+					</div>
 				</AlertDialogContent>
 			</AlertDialog>
 		</>
