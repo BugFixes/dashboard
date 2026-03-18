@@ -110,8 +110,8 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 											Bugfixes
 										</p>
 										<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-											Customer dashboard for agents, bugs, tickets, notifications,
-											members, and settings.
+											Customer dashboard for agents, bugs, tickets,
+											notifications, members, and settings.
 										</p>
 									</Link>
 								</div>
@@ -203,65 +203,65 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
 						id="mobile-dashboard-nav"
 						className="dashboard-mobile-sheet fixed inset-y-0 left-0 z-50 flex w-[min(88vw,22rem)] flex-col gap-5 overflow-y-auto px-4 py-5"
 					>
-								<div className="flex flex-col gap-5">
-									<div className="flex items-start justify-between gap-3">
-										<div className="flex flex-col gap-2">
-											<Badge
-												variant="outline"
-												className="w-fit rounded-full px-3 py-1"
-											>
-												Organization
-											</Badge>
-											<OrganizationSwitcher
-												hidePersonal
-												afterCreateOrganizationUrl="/"
-												afterLeaveOrganizationUrl="/"
-												afterSelectOrganizationUrl="/"
-												appearance={{
-													elements: {
-														rootBox: "w-full",
-														organizationSwitcherTrigger:
-															"flex items-center gap-3 w-full p-2 rounded-xl border border-[var(--line)] bg-white dark:bg-zinc-900 shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800",
-														organizationPreviewMainIdentifier:
-															"font-semibold text-sm truncate",
-														organizationPreviewSecondaryIdentifier:
-															"text-xs text-zinc-500",
-														organizationPreviewAvatarBox: "size-8 rounded-lg",
-													},
-												}}
-											/>
-											{!organization && (
-												<div className="flex items-center gap-2 rounded-xl border border-dashed border-[var(--line)] p-2 text-xs text-[var(--sea-ink-soft)]">
-													<Plus className="size-4" />
-													<span>Select or create an organization</span>
-												</div>
-											)}
+						<div className="flex flex-col gap-5">
+							<div className="flex items-start justify-between gap-3">
+								<div className="flex flex-col gap-2">
+									<Badge
+										variant="outline"
+										className="w-fit rounded-full px-3 py-1"
+									>
+										Organization
+									</Badge>
+									<OrganizationSwitcher
+										hidePersonal
+										afterCreateOrganizationUrl="/"
+										afterLeaveOrganizationUrl="/"
+										afterSelectOrganizationUrl="/"
+										appearance={{
+											elements: {
+												rootBox: "w-full",
+												organizationSwitcherTrigger:
+													"flex items-center gap-3 w-full p-2 rounded-xl border border-[var(--line)] bg-white dark:bg-zinc-900 shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800",
+												organizationPreviewMainIdentifier:
+													"font-semibold text-sm truncate",
+												organizationPreviewSecondaryIdentifier:
+													"text-xs text-zinc-500",
+												organizationPreviewAvatarBox: "size-8 rounded-lg",
+											},
+										}}
+									/>
+									{!organization && (
+										<div className="flex items-center gap-2 rounded-xl border border-dashed border-[var(--line)] p-2 text-xs text-[var(--sea-ink-soft)]">
+											<Plus className="size-4" />
+											<span>Select or create an organization</span>
 										</div>
-										<Button
-											type="button"
-											variant="outline"
-											size="icon-sm"
-											onClick={() => setMobileNavOpen(false)}
-											aria-label="Close navigation"
-											className="mt-1"
-										>
-											<X />
-										</Button>
-									</div>
-
-									<div className="space-y-2">
-										<Badge variant="outline" className="rounded-full px-3 py-1">
-											Primary navigation
-										</Badge>
-										<p className="m-0 font-display text-2xl font-semibold tracking-tight text-[var(--sea-ink)]">
-											Bugfixes
-										</p>
-										<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
-											Choose a section. Build the real workflow inside the stable
-											shell.
-										</p>
-									</div>
+									)}
 								</div>
+								<Button
+									type="button"
+									variant="outline"
+									size="icon-sm"
+									onClick={() => setMobileNavOpen(false)}
+									aria-label="Close navigation"
+									className="mt-1"
+								>
+									<X />
+								</Button>
+							</div>
+
+							<div className="space-y-2">
+								<Badge variant="outline" className="rounded-full px-3 py-1">
+									Primary navigation
+								</Badge>
+								<p className="m-0 font-display text-2xl font-semibold tracking-tight text-[var(--sea-ink)]">
+									Bugfixes
+								</p>
+								<p className="m-0 text-sm leading-6 text-[var(--sea-ink-soft)]">
+									Choose a section. Build the real workflow inside the stable
+									shell.
+								</p>
+							</div>
+						</div>
 
 						<nav className="space-y-2" aria-label="Mobile primary">
 							{visibleNavItems.map((item) => {

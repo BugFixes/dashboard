@@ -2,7 +2,6 @@ import { OrganizationProfile, useAuth, useOrganization } from "@clerk/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Inbox, UserPlus, Users, X } from "lucide-react";
 import { startTransition, useState } from "react";
-import { Button } from "#/components/ui/button";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -15,6 +14,7 @@ import {
 } from "#/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
+import { Button } from "#/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -147,7 +147,7 @@ function MembersRoute() {
 	}
 
 	// Loading state
-	if (!isOrgLoaded || (memberships && memberships.isLoading)) {
+	if (!isOrgLoaded || memberships?.isLoading) {
 		return <MembersListSkeleton />;
 	}
 
@@ -327,7 +327,9 @@ function MembersScreen({
 							/>
 							{isAdmin && source === "live" && (
 								<div className="mt-6 flex justify-center">
-									<Button onClick={onInviteClick}>Invite your first member</Button>
+									<Button onClick={onInviteClick}>
+										Invite your first member
+									</Button>
 								</div>
 							)}
 						</CardContent>
